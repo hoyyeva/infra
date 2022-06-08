@@ -21,6 +21,8 @@ import (
 	"github.com/muesli/termenv"
 	"github.com/spf13/cobra"
 
+	"github.com/infrahq/infra/internal/cmd/types"
+
 	"github.com/infrahq/infra/api"
 	"github.com/infrahq/infra/internal/generate"
 	"github.com/infrahq/infra/internal/logging"
@@ -28,7 +30,7 @@ import (
 )
 
 type loginCmdOptions struct {
-	Server         string
+	Server         types.URL
 	AccessKey      string
 	Provider       string
 	SkipTLSVerify  bool
@@ -66,7 +68,9 @@ $ infra login --key 1M4CWy9wF5.fAKeKEy5sMLH9ZZzAur0ZIjy`,
 		Group: "Core commands:",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 1 {
-				options.Server = args[0]
+				if err := options.Server.Set(args[0]); err != nil {
+					return fmt.Errorf("invalid server url: %w", err)
+				}
 			}
 
 			return login(cli, options)
@@ -83,7 +87,7 @@ $ infra login --key 1M4CWy9wF5.fAKeKEy5sMLH9ZZzAur0ZIjy`,
 func login(cli *CLI, options loginCmdOptions) error {
 	var err error
 
-	if options.Server == "" {
+	if options.Server.Host == "" {
 		options.Server, err = promptServer(cli, options)
 		if err != nil {
 			return err
@@ -398,31 +402,18 @@ func newAPIClient(cli *CLI, options loginCmdOptions) (*api.Client, error) {
 		}
 	}
 
-	client, err := apiClient(options.Server, "", options.SkipTLSVerify)
-	if err != nil {
-		return nil, err
-	}
-
+	client := apiClient(options.Server.String(), "", options.SkipTLSVerify)
 	return client, nil
 }
 
-func verifyTLS(host string) error {
-	url, err := urlx.Parse(host)
-	if err != nil {
-		logging.S.Debug("Cannot parse host", host, err)
-		logging.S.Error("Could not login. Please check the server hostname")
-		return err
-	}
-	url.Scheme = "https"
-	urlString := url.String()
-
-	req, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, urlString, nil)
+func verifyTLS(u types.URL) error {
+	req, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, u.String(), nil)
 	if err != nil {
 		logging.S.Debugf("Cannot create request: %v", err)
 		return err
 	}
 
-	logging.S.Debugf("call server: test tls for %q", host)
+	logging.S.Debugf("call server: test tls for %q", u.String())
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		if !errors.As(err, &x509.UnknownAuthorityError{}) && !errors.As(err, &x509.HostnameError{}) && !strings.Contains(err.Error(), "certificate is not trusted") {
@@ -545,14 +536,15 @@ func promptSkipTLSVerify(cli *CLI) error {
 }
 
 // Returns the host address of the Infra server that user would like to log into
-func promptServer(cli *CLI, options loginCmdOptions) (string, error) {
+func promptServer(cli *CLI, options loginCmdOptions) (types.URL, error) {
+	var u types.URL
 	if options.NonInteractive {
-		return "", Error{Message: "Non-interactive login requires the [SERVER] argument"}
+		return u, Error{Message: "Non-interactive login requires the [SERVER] argument"}
 	}
 
 	config, err := readConfig()
 	if err != nil {
-		return "", err
+		return u, err
 	}
 
 	servers := config.Hosts
@@ -564,18 +556,18 @@ func promptServer(cli *CLI, options loginCmdOptions) (string, error) {
 	return promptServerList(cli, servers)
 }
 
-func promptNewServer(cli *CLI) (string, error) {
-	var server string
+func promptNewServer(cli *CLI) (types.URL, error) {
+	var u types.URL
 	err := survey.AskOne(
 		&survey.Input{Message: "Server:"},
-		&server,
+		&u,
 		cli.surveyIO,
 		survey.WithValidator(survey.Required),
 	)
-	return server, err
+	return u, err
 }
 
-func promptServerList(cli *CLI, servers []ClientHostConfig) (string, error) {
+func promptServerList(cli *CLI, servers []ClientHostConfig) (types.URL, error) {
 	var promptOptions []string
 	for _, server := range servers {
 		promptOptions = append(promptOptions, server.Host)
@@ -593,16 +585,18 @@ func promptServerList(cli *CLI, servers []ClientHostConfig) (string, error) {
 		return strings.Contains(optValue, filterValue) || strings.EqualFold(optValue, defaultOption)
 	}
 
+	var u types.URL
 	var i int
 	if err := survey.AskOne(prompt, &i, survey.WithFilter(filter), cli.surveyIO); err != nil {
-		return "", err
+		return u, err
 	}
 
 	if promptOptions[i] == defaultOption {
 		return promptNewServer(cli)
 	}
 
-	return servers[i].Host, nil
+	err := u.Set(servers[i].Host)
+	return u, err
 }
 
 func promptSetEmail(cli *CLI) (string, error) {
