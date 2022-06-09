@@ -42,6 +42,7 @@ type UpdateUserRequest struct {
 
 func (r *UpdateUserRequest) ValidationRules() []validate.ValidationRule {
 	return []validate.ValidationRule{
+		validate.Required("id", r.ID),
 		validate.Required("password", r.Password),
 		validate.StringRule{Name: "password", Value: r.Password, MinLength: 8},
 	}

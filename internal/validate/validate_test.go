@@ -26,6 +26,12 @@ func (r *ExampleRequest) ValidationRules() []ValidationRule {
 			Name:      "strOne",
 			MinLength: 2,
 			MaxLength: 10,
+			CharacterRanges: []CharRange{
+				AlphabetLower,
+				AlphabetUpper,
+				Numbers,
+				Dot, Dash, Underscore,
+			},
 		},
 		Required("fieldOne", r.Sub.FieldOne),
 		&StringRule{

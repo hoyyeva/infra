@@ -1,8 +1,11 @@
 package validate
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 )
 
@@ -17,5 +20,44 @@ func TestValidate_StringRule(t *testing.T) {
 		err := Validate(r)
 		assert.ErrorContains(t, err, "length (13) must be no more than 10")
 	})
-	// TODO: test multiple failures together, when that is possible
+	t.Run("character ranges", func(t *testing.T) {
+		r := &ExampleRequest{RequiredString: "almost~valid"}
+		err := Validate(r)
+
+		var verr Error
+		assert.Assert(t, errors.As(err, &verr), "wrong type %T", err)
+		expected := Error{
+			FieldErrors: map[string][]string{
+				"fieldOne": {"a value is required"},
+				"strOne": {
+					"length (12) must be no more than 10, character ~ at position 6 is not allowed",
+				},
+			},
+		}
+		assert.DeepEqual(t, verr, expected)
+	})
 }
+
+func TestStringRule_DescribeSchema(t *testing.T) {
+	r := StringRule{
+		MinLength: 2,
+		MaxLength: 10,
+		CharacterRanges: []CharRange{
+			AlphabetUpper,
+			Dot, Dash,
+		},
+	}
+
+	var schema openapi3.Schema
+	r.DescribeSchema(&schema)
+
+	var max uint64 = 10
+	expected := openapi3.Schema{
+		MinLength: 2,
+		MaxLength: &max,
+		Format:    `[A-Z.\-]`,
+	}
+	assert.DeepEqual(t, schema, expected, cmpSchema)
+}
+
+var cmpSchema = cmpopts.IgnoreUnexported(openapi3.Schema{})
