@@ -12,7 +12,7 @@ type ValidationRule interface {
 	DescribeSchema(schema *openapi3.Schema)
 
 	validate() error
-	fieldValue() reflect.Value
+	jsonName() string
 }
 
 // Request is implemented by all request structs
@@ -39,13 +39,16 @@ func (e Error) Error() string {
 }
 
 type requiredRule struct {
-	value reflect.Value
+	name  string
+	value any
 }
 
-// Required checks that the field does not have a zero value.
+// Required checks that the value does not have a zero value.
 // Zero values are nil, "", 0, and false.
-func Required(field any) ValidationRule {
-	return requiredRule{value: reflect.ValueOf(field)}
+// Name is the name of the field as visible to the user, often the json field
+// name.
+func Required(name string, value any) ValidationRule {
+	return requiredRule{name: name, value: value}
 }
 
 func (r requiredRule) DescribeSchema(*openapi3.Schema) {
@@ -57,14 +60,14 @@ func (r requiredRule) IsRequired() bool {
 
 func (r requiredRule) validate() error {
 	// value is always a non-nil pointer, so indirect it
-	if !reflect.Indirect(r.value).IsZero() {
+	if !reflect.ValueOf(r.value).IsZero() {
 		return nil
 	}
 	return fmt.Errorf("a value is required")
 }
 
-func (r requiredRule) fieldValue() reflect.Value {
-	return r.value
+func (r requiredRule) jsonName() string {
+	return r.name
 }
 
 // IsRequired returns true if any of the rules indicate the value of the field is

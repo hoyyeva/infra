@@ -31,9 +31,9 @@ type CreateAccessKeyRequest struct {
 
 func (r *CreateAccessKeyRequest) ValidationRules() []validate.ValidationRule {
 	return []validate.ValidationRule{
-		validate.Required(&r.UserID),
-		validate.Required(&r.TTL),
-		validate.Required(&r.ExtensionDeadline),
+		validate.Required("userID", r.UserID),
+		validate.Required("ttl", r.TTL),
+		validate.Required("extensionDeadline", r.ExtensionDeadline),
 	}
 }
 

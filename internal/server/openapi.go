@@ -197,14 +197,17 @@ func buildProperty(f reflect.StructField, t reflect.Type, parent structDescripti
 	}
 
 	s := &openapi3.Schema{}
+	name := getFieldName(f, parent.typ)
 	setTagInfo(f, t, parent.typ, s, parent.schema)
 	setTypeInfo(t, s)
 
-	for _, rule := range parent.rules[f.Name] {
+	for _, rule := range parent.rules[name] {
 		rule.DescribeSchema(s)
 	}
-	if ivalidate.IsRequired(parent.rules[f.Name]...) {
-		parent.schema.Required = append(parent.schema.Required, getFieldName(f, parent.typ))
+	if parent.schema != nil {
+		if ivalidate.IsRequired(parent.rules[name]...) {
+			parent.schema.Required = append(parent.schema.Required, name)
+		}
 	}
 
 	if s.Type == "array" {
@@ -555,10 +558,10 @@ func buildRequest(r reflect.Type, op *openapi3.Operation) {
 				}
 			}
 
-			for _, rule := range rules[f.Name] {
+			for _, rule := range rules[p.Name] {
 				rule.DescribeSchema(p.Schema.Value)
 			}
-			if ivalidate.IsRequired(rules[f.Name]...) {
+			if ivalidate.IsRequired(rules[p.Name]...) {
 				p.Required = true
 			}
 

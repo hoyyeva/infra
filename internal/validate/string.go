@@ -2,27 +2,24 @@ package validate
 
 import (
 	"fmt"
-	"reflect"
 	"strings"
-	"sync"
 
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
 type StringRule struct {
-	// Field is the pointer to the field to validate.
-	Field any
+	// Value to validate
+	Value string
+	// Name of the field in json.
+	Name string
 
 	MinLength int
 	MaxLength int
 
 	// TODO: restrict valid characters
-
-	once  sync.Once
-	value reflect.Value
 }
 
-func (s *StringRule) DescribeSchema(schema *openapi3.Schema) {
+func (s StringRule) DescribeSchema(schema *openapi3.Schema) {
 	schema.MinLength = uint64(s.MinLength)
 	if s.MaxLength > 0 {
 		max := uint64(s.MaxLength)
@@ -30,8 +27,8 @@ func (s *StringRule) DescribeSchema(schema *openapi3.Schema) {
 	}
 }
 
-func (s *StringRule) validate() error {
-	value := s.fieldValue().Elem().String()
+func (s StringRule) validate() error {
+	value := s.Value
 	if value == "" {
 		return nil
 	}
@@ -54,9 +51,6 @@ func (s *StringRule) validate() error {
 	return nil
 }
 
-func (s *StringRule) fieldValue() reflect.Value {
-	s.once.Do(func() {
-		s.value = reflect.ValueOf(s.Field)
-	})
-	return s.value
+func (s StringRule) jsonName() string {
+	return s.Name
 }

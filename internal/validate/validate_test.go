@@ -2,12 +2,9 @@ package validate
 
 import (
 	"errors"
-	"reflect"
-	"sync"
 	"testing"
 
 	gocmp "github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/v3/assert"
 )
 
@@ -23,21 +20,17 @@ type Sub struct {
 
 func (r *ExampleRequest) ValidationRules() []ValidationRule {
 	return []ValidationRule{
-		Required(&r.RequiredString),
+		Required("strOne", r.RequiredString),
 		&StringRule{
-			Field:     &r.RequiredString,
+			Value:     r.RequiredString,
+			Name:      "strOne",
 			MinLength: 2,
 			MaxLength: 10,
 		},
-		StructRule(&r.SubNested),
-		Required(&r.Sub.FieldOne),
-	}
-}
-
-func (r *Sub) ValidationRules() []ValidationRule {
-	return []ValidationRule{
+		Required("fieldOne", r.Sub.FieldOne),
 		&StringRule{
-			Field:     &r.FieldOne,
+			Value:     r.SubNested.FieldOne,
+			Name:      "subNested.fieldOne",
 			MaxLength: 10,
 		},
 	}
@@ -46,7 +39,7 @@ func (r *Sub) ValidationRules() []ValidationRule {
 func TestValidate_Success(t *testing.T) {
 	r := &ExampleRequest{
 		RequiredString: "not-zero",
-		Sub:            Sub{FieldOne: "also-not-zero"},
+		Sub:            Sub{FieldOne: "not-zero2"},
 	}
 	err := Validate(r)
 	assert.NilError(t, err)
@@ -80,20 +73,13 @@ func TestRulesToMap(t *testing.T) {
 	rules, err := RulesToMap(r)
 	assert.NilError(t, err)
 	expected := map[string][]ValidationRule{
-		"RequiredString": {list[0], list[1]},
-		"SubNested":      {list[2]},
-		"FieldOne":       {list[3]},
+		"strOne":             {list[0], list[1]},
+		"fieldOne":           {list[2]},
+		"subNested.fieldOne": {list[3]},
 	}
 	assert.DeepEqual(t, rules, expected, cmpValidationRules)
 }
 
 var cmpValidationRules = gocmp.Options{
-	gocmp.AllowUnexported(requiredRule{}, structRule{}),
-	cmpopts.IgnoreUnexported(sync.Once{}, StringRule{}),
-	gocmp.Comparer(func(x, y reflect.Value) bool {
-		if x.IsValid() || y.IsValid() {
-			return x.IsValid() == y.IsValid()
-		}
-		return x.Interface() == y.Interface()
-	}),
+	gocmp.AllowUnexported(requiredRule{}),
 }
