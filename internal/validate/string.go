@@ -106,6 +106,6 @@ func inRange(ranges []CharRange, c rune) bool {
 	return false
 }
 
-func (s StringRule) jsonName() string {
+func (s StringRule) fieldName() string {
 	return s.Name
 }

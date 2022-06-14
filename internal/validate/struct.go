@@ -7,7 +7,7 @@ func Validate(req Request) error {
 
 	for _, rule := range req.ValidationRules() {
 		if err := rule.validate(); err != nil {
-			fieldErrors[rule.jsonName()] = append(fieldErrors[rule.jsonName()], err.Error())
+			fieldErrors[rule.fieldName()] = append(fieldErrors[rule.fieldName()], err.Error())
 		}
 	}
 
@@ -22,7 +22,7 @@ func Validate(req Request) error {
 func RulesToMap(req Request) (map[string][]ValidationRule, error) {
 	result := make(map[string][]ValidationRule)
 	for _, rule := range req.ValidationRules() {
-		result[rule.jsonName()] = append(result[rule.jsonName()], rule)
+		result[rule.fieldName()] = append(result[rule.fieldName()], rule)
 	}
 	return result, nil
 }

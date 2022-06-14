@@ -9,10 +9,10 @@ import (
 )
 
 type ValidationRule interface {
-	DescribeSchema(schema *openapi3.Schema)
-
 	validate() error
-	jsonName() string
+
+	DescribeSchema(schema *openapi3.Schema)
+	fieldName() string
 }
 
 // Request is implemented by all request structs
@@ -66,7 +66,7 @@ func (r requiredRule) validate() error {
 	return fmt.Errorf("a value is required")
 }
 
-func (r requiredRule) jsonName() string {
+func (r requiredRule) fieldName() string {
 	return r.name
 }
 
@@ -84,6 +84,40 @@ type isRequired interface {
 	IsRequired() bool
 }
 
-// TODO: requiredWith
+// TODO: requiredWithout
 // TODO: mutuallyExclusive
-// TODO: nested structs
+
+// MutuallyExclusive returns a validation rule that checks that only one of the
+// fields is set to a non-zero value.
+func MutuallyExclusive(
+	nameA string, valueA interface{},
+	nameB string, valueB interface{},
+) ValidationRule {
+	return mutuallyExclusive{
+		nameA:  nameA,
+		valueA: valueA,
+		nameB:  nameB,
+		valueB: valueB,
+	}
+}
+
+type mutuallyExclusive struct {
+	nameA  string
+	valueA interface{}
+	nameB  string
+	valueB interface{}
+}
+
+func (m mutuallyExclusive) validate() error {
+	if reflect.ValueOf(m.valueA).IsZero() || reflect.ValueOf(m.valueB).IsZero() {
+		return nil
+	}
+	return fmt.Errorf("only one of %v and %v can be set", m.nameA, m.nameB)
+}
+
+func (m mutuallyExclusive) DescribeSchema(schema *openapi3.Schema) {
+}
+
+func (m mutuallyExclusive) fieldName() string {
+	return m.nameA
+}
