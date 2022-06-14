@@ -84,40 +84,62 @@ type isRequired interface {
 	IsRequired() bool
 }
 
-// TODO: requiredWithout
-// TODO: mutuallyExclusive
+// Field is used to construct validation rules that incorporate multiple fields.
+type Field struct {
+	Name  string
+	Value interface{}
+}
 
 // MutuallyExclusive returns a validation rule that checks that only one of the
 // fields is set to a non-zero value.
-func MutuallyExclusive(
-	nameA string, valueA interface{},
-	nameB string, valueB interface{},
-) ValidationRule {
-	return mutuallyExclusive{
-		nameA:  nameA,
-		valueA: valueA,
-		nameB:  nameB,
-		valueB: valueB,
-	}
+func MutuallyExclusive(fields ...Field) ValidationRule {
+	return mutuallyExclusive(fields)
 }
 
-type mutuallyExclusive struct {
-	nameA  string
-	valueA interface{}
-	nameB  string
-	valueB interface{}
-}
+type mutuallyExclusive []Field
 
 func (m mutuallyExclusive) validate() error {
-	if reflect.ValueOf(m.valueA).IsZero() || reflect.ValueOf(m.valueB).IsZero() {
-		return nil
+	var nonZero []string
+	for _, field := range m {
+		if !reflect.ValueOf(field).IsZero() {
+			nonZero = append(nonZero, field.Name)
+		}
 	}
-	return fmt.Errorf("only one of %v and %v can be set", m.nameA, m.nameB)
+
+	if len(nonZero) > 1 {
+		return fmt.Errorf("only one of %v can be set", strings.Join(nonZero, ", "))
+	}
+	return nil
 }
 
-func (m mutuallyExclusive) DescribeSchema(schema *openapi3.Schema) {
-}
+func (m mutuallyExclusive) DescribeSchema(_ *openapi3.Schema) {}
 
 func (m mutuallyExclusive) fieldName() string {
-	return m.nameA
+	return ""
+}
+
+func RequireOneOf(fields ...Field) ValidationRule {
+	return requireOneOf(fields)
+}
+
+type requireOneOf []Field
+
+func (m requireOneOf) validate() error {
+	var zero []string
+	for _, field := range m {
+		if reflect.ValueOf(field).IsZero() {
+			zero = append(zero, field.Name)
+		}
+	}
+
+	if len(zero) == 0 {
+		return fmt.Errorf("one of %v must be set", strings.Join(zero, ", "))
+	}
+	return nil
+}
+
+func (m requireOneOf) DescribeSchema(_ *openapi3.Schema) {}
+
+func (m requireOneOf) fieldName() string {
+	return ""
 }
