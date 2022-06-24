@@ -49,6 +49,7 @@ type Provider struct {
 	URL          string
 	ClientID     string
 	ClientSecret EncryptedAtRest
+	AuthURL      string
 	Kind         ProviderKind
 	CreatedBy    uid.ID
 }

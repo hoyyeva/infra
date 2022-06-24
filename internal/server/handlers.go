@@ -227,6 +227,11 @@ func (a *API) CreateProvider(c *gin.Context, r *api.CreateProviderRequest) (*api
 	}
 	provider.Kind = kind
 
+	oidc, err := a.providerClient(c, provider, "http://localhost:8301")
+	if err != nil {
+		return nil, fmt.Errorf("%w: %s", internal.ErrBadRequest, err)
+	}
+
 	if err := a.validateProvider(c, provider); err != nil {
 		return nil, err
 	}
