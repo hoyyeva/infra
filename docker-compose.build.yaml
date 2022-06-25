@@ -2,6 +2,9 @@ version: "3.9"
 
 services:
   server:
+    ports:
+      - 80:80
+      - 443:443
     build:
       context: .
       args:

@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: "1.18"
           cache: true
       - run: go mod download -x
       - run: go install gotest.tools/gotestsum@v1.8.0
@@ -51,19 +51,25 @@ jobs:
       - name: install npm dependencies
         working-directory: ui
         run: npm install
-      - name: run ui tests
+      - name: run unit tests
         working-directory: ui
         run: npm test
-      - name: Check ui build
+      - name: run linter and formatter
         working-directory: ui
         run: |
-           npm run build
-           npm run export
-      - name: Lint and format ui
+          npm run lint
+          npm run format
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.18"
+          cache: true
+      - name: run e2e tests
         working-directory: ui
         run: |
-           npm run lint
-           npm run format
+          npm run build
+          npm run export -- -o ../internal/server/ui/static
+          ./node_modules/.bin/playwright install --with-deps
+          npm run test:e2e
 
   go-lint:
     runs-on: ubuntu-latest
@@ -71,7 +77,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: "1.18"
           cache: true
       - uses: golangci/golangci-lint-action@v3.2.0
 
@@ -88,7 +94,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: "1.18"
           cache: true
       - run: go mod download -x
       - run: go build -debug-actiongraph=compile.json .

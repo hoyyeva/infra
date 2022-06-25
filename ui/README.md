@@ -27,6 +27,18 @@ npm run export -- -o ../internal/server/ui/static
 
 Now building the Infra Server will include the Infra Dashboard.
 
+## Test
+
+Unit tests can be run via `npm run test`
+
+To run end-to-end (e2e) tests, use:
+
+```
+npm run build
+npm run export -- -o ../internal/server/ui/static
+npm run test:e2e
+```
+
 ## Linting
 
 Linting is done via [ESLint](https://eslint.org/)
