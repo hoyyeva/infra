@@ -3,7 +3,7 @@ import { PlusIcon } from '@heroicons/react/outline'
 
 export default function PageHeader({ header, buttonLabel, buttonHref }) {
   return (
-    <div className='z-10 flex min-h-[40px] flex-none items-center justify-between bg-black py-3 px-6'>
+    <div className='z-10 flex min-h-[40px] flex-none items-center justify-between py-3 px-6'>
       <h1 className='py-3 text-xs font-semibold'>{header}</h1>
       {buttonHref && (
         <Link href={buttonHref} data-testid='page-header-button-link'>

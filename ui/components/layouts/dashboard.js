@@ -1,6 +1,12 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import useSWR, { useSWRConfig } from 'swr'
+import {
+  ChipIcon,
+  UserGroupIcon,
+  UserIcon,
+  ViewGridIcon,
+} from '@heroicons/react/outline'
 
 import { useAdmin } from '../../lib/admin'
 import AuthRequired from '../auth-required'
@@ -27,15 +33,73 @@ function Layout({ children }) {
   }
 
   const navigation = [
-    { name: 'Clusters', href: '/destinations', icon: '/destinations.svg' },
+    {
+      name: 'Clusters',
+      href: '/destinations',
+      icon: '/destinations.svg',
+      heroIcon: (
+        <ChipIcon
+          className={`
+            ${
+              router.asPath.startsWith('/destinations')
+                ? 'dark:text-white'
+                : 'dark:text-white dark:opacity-40'
+            }
+          `}
+        />
+      ),
+    },
     {
       name: 'Providers',
       href: '/providers',
       icon: '/providers.svg',
       admin: true,
+      heroIcon: (
+        <ViewGridIcon
+          className={`
+            ${
+              router.asPath.startsWith('/providers')
+                ? 'dark:text-white'
+                : 'dark:text-white dark:opacity-40'
+            }
+          `}
+        />
+      ),
     },
-    { name: 'Groups', href: '/groups', icon: '/groups.svg', admin: true },
-    { name: 'Users', href: '/users', icon: '/users.svg', admin: true },
+    {
+      name: 'Groups',
+      href: '/groups',
+      icon: '/groups.svg',
+      admin: true,
+      heroIcon: (
+        <UserGroupIcon
+          className={`
+            ${
+              router.asPath.startsWith('/groups')
+                ? 'dark:text-white'
+                : 'dark:text-white dark:opacity-40'
+            }
+          `}
+        />
+      ),
+    },
+    {
+      name: 'Users',
+      href: '/users',
+      icon: '/users.svg',
+      admin: true,
+      heroIcon: (
+        <UserIcon
+          className={`
+            ${
+              router.asPath.startsWith('/users')
+                ? 'dark:text-white'
+                : 'dark:text-white dark:opacity-40'
+            }
+          `}
+        />
+      ),
+    },
   ]
 
   const subNavigation = [
@@ -61,7 +125,16 @@ function Layout({ children }) {
         <div className='lg:my-18 mt-6 mb-10 flex flex-shrink-0 select-none items-center px-5'>
           <Link href='/'>
             <a>
-              <img className='h-[15px]' src='infra.svg' alt='Infra' />
+              {/* <img
+                className='h-5 dark:fill-white dark:text-white'
+                src='infra.svg'
+                alt='Infra'
+              /> */}
+
+              <object
+                data='infra.svg'
+                className='h-5 dark:fill-white dark:text-white'
+              />
             </a>
           </Link>
         </div>
@@ -75,20 +148,23 @@ function Layout({ children }) {
                   className={`
                     ${
                       router.asPath.startsWith(n.href)
-                        ? 'text-white'
-                        : 'text-gray-400'
+                        ? 'text-gray-400 dark:text-white'
+                        : 'text-gray-800 dark:text-gray-400'
                     }
                     flex items-center rounded-lg py-2 text-xs leading-none transition-colors duration-100
                   `}
                 >
-                  <img
+                  {/* <img
                     alt={n?.name?.toLowerCase()}
                     src={n.icon}
                     className={`
                       ${router.asPath.startsWith(n.href) ? '' : 'opacity-40'}
                       mr-3 h-[18px] w-[18px] flex-shrink-0
                     `}
-                  />
+                  /> */}
+                  <svg className='mr-[6px] h-[18px] w-[18px] flex-shrink-0'>
+                    {n.heroIcon}
+                  </svg>
                   {n.name}
                 </a>
               </Link>

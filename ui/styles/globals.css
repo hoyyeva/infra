@@ -6,8 +6,8 @@ html,
 body,
 #__next {
   @apply h-screen;
-  @apply text-white;
-  @apply bg-black;
+  @apply dark:text-white text-black;
+  @apply dark:bg-black bg-white;
   @apply antialiased;
   @apply font-normal;
 }
