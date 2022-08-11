@@ -125,15 +125,10 @@ function Layout({ children }) {
         <div className='lg:my-18 mt-6 mb-10 flex flex-shrink-0 select-none items-center px-5'>
           <Link href='/'>
             <a>
-              {/* <img
+              <img
                 className='h-5 dark:fill-white dark:text-white'
                 src='infra.svg'
                 alt='Infra'
-              /> */}
-
-              <object
-                data='infra.svg'
-                className='h-5 dark:fill-white dark:text-white'
               />
             </a>
           </Link>

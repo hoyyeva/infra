@@ -2,7 +2,7 @@ import { useState } from 'react'
 import useSWR from 'swr'
 import Head from 'next/head'
 import dayjs from 'dayjs'
-import { PlusSmIcon, MinusSmIcon } from '@heroicons/react/outline'
+import { PlusSmIcon, MinusSmIcon, ChipIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 
 import { sortBySubject, sortByPrivilege } from '../../lib/grants'
@@ -392,6 +392,7 @@ export default function Destinations() {
                     title='There are no clusters'
                     subtitle='There is currently no cluster connected to Infra'
                     iconPath='/destinations.svg'
+                    icon={<ChipIcon className='dark:text-white' />}
                     buttonHref={admin && '/destinations/add'}
                     buttonText='Cluster'
                   />

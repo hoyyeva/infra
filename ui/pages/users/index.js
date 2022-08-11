@@ -19,6 +19,7 @@ import RoleSelect from '../../components/role-select'
 import RemoveButton from '../../components/remove-button'
 import Pagination from '../../components/pagination'
 import DeleteModal from '../../components/delete-modal'
+import { UsersIcon } from '@heroicons/react/outline'
 
 const columns = [
   {
@@ -309,6 +310,7 @@ export default function Users() {
                     subtitle='Invite users to Infra and manage their access.'
                     iconPath='/users.svg'
                     buttonHref={admin && '/users/add'}
+                    icon={<UsersIcon className='dark:text-white' />}
                     buttonText='Users'
                   />
                 )}

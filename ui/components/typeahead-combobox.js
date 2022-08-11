@@ -33,7 +33,7 @@ export default function TypeaheadCombobox({
           <Combobox.Input
             type='search'
             ref={inputRef}
-            className='relative my-2 w-full bg-transparent text-xs text-gray-300 placeholder:italic focus:outline-none'
+            className='relative my-2 w-full bg-transparent text-2xs text-gray-300 placeholder:italic focus:outline-none'
             onChange={e => setQuery(e.target.value)}
             onFocus={() => {
               button.current?.click()
@@ -50,7 +50,7 @@ export default function TypeaheadCombobox({
               key={f.id}
               value={f}
               className={({ active }) =>
-                `relative cursor-default select-none py-2 px-3 hover:bg-gray-700 ${
+                `relative cursor-default select-none py-2 px-3 text-gray-200 dark:text-white dark:hover:bg-gray-700 ${
                   active ? 'bg-gray-700' : ''
                 }`
               }

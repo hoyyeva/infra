@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import ErrorMessage from '../../components/error-message'
 import Fullscreen from '../../components/layouts/fullscreen'
 import TypeaheadCombobox from '../../components/typeahead-combobox'
+import { UserGroupIcon } from '@heroicons/react/outline'
 
 function EmailsSelectInput({ selectedEmails, setSelectedEmails }) {
   const { data: { items: users } = { items: [] } } = useSWR(
@@ -33,7 +34,7 @@ function EmailsSelectInput({ selectedEmails, setSelectedEmails }) {
   }
 
   return (
-    <div className='bg-gray-900 px-4 py-3'>
+    <div className='px-4 py-3 dark:bg-gray-900'>
       <TypeaheadCombobox
         selectedEmails={selectedEmails}
         setSelectedEmails={setSelectedEmails}
@@ -131,14 +132,14 @@ export default function GroupsAdd() {
       <div className='space-y-4 pt-5 pb-4'>
         <div className='flex flex-col'>
           <div className='flex flex-row items-center space-x-2 px-4'>
-            <img alt='groups' src='/groups.svg' className='h-6 w-6' />
+            <UserGroupIcon className='h-6 w-6 dark:text-white' />
             <div>
-              <h1 className='text-2xs'>Create Group</h1>
+              <h1 className='text-sm'>Create Group</h1>
             </div>
           </div>
           <div className='mt-6 flex flex-col space-y-1'>
             <div className='mt-4 px-4'>
-              <label className='text-3xs uppercase text-gray-400'>
+              <label className='text-2xs uppercase dark:text-gray-400'>
                 Name Your Group
               </label>
               <input
@@ -148,7 +149,7 @@ export default function GroupsAdd() {
                 placeholder='enter the group name here'
                 value={groupName}
                 onChange={e => handleGroupNameInputChange(e.target.value)}
-                className={`border-gray-950 w-full border-b bg-transparent px-px py-3 text-3xs placeholder:italic focus:border-b focus:border-gray-200 focus:outline-none ${
+                className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
                   errors.name ? 'border-pink-500' : 'border-gray-800'
                 }`}
               />
@@ -163,7 +164,7 @@ export default function GroupsAdd() {
           </div>
           <div className='mt-6 flex flex-row items-center justify-end px-4'>
             <Link href='/groups'>
-              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase text-gray-400 hover:text-white'>
+              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
                 Cancel
               </a>
             </Link>
@@ -171,7 +172,7 @@ export default function GroupsAdd() {
               type='button'
               onClick={() => handleCreateGroup()}
               disabled={!groupName}
-              className='flex-none self-end rounded-md border border-violet-300 px-4 py-2 text-2xs text-violet-100 disabled:opacity-10'
+              className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
             >
               Create Group
             </button>

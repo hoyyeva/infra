@@ -15,6 +15,7 @@ import Sidebar from '../../components/sidebar'
 import Metadata from '../../components/metadata'
 import RemoveButton from '../../components/remove-button'
 import Pagination from '../../components/pagination'
+import { ViewGridIcon } from '@heroicons/react/outline'
 
 const columns = [
   {
@@ -144,6 +145,7 @@ export default function Providers() {
                       </>
                     }
                     iconPath='/providers.svg'
+                    icon={<ViewGridIcon className='dark:text-white' />}
                     buttonHref='/providers/add'
                     buttonText='Provider'
                   />

@@ -93,7 +93,7 @@ export default function DestinationsAdd() {
       <form onSubmit={onSubmit} className='mb-10 flex space-x-2 px-4'>
         <div className='flex-1'>
           <label className='text-3xs uppercase text-gray-400'>
-            Cluster Name
+            Name the Cluster
           </label>
           <input
             required
