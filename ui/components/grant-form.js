@@ -66,7 +66,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
                   key={f.id}
                   value={f}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 px-3 hover:bg-gray-700 ${
+                    `relative cursor-default select-none py-2 px-3 text-gray-200 dark:text-white dark:hover:bg-gray-700 ${
                       active ? 'bg-gray-700' : ''
                     }`
                   }
@@ -92,8 +92,8 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
           type='submit'
           className='flex h-8 cursor-pointer items-center rounded-md border border-violet-300 px-3 py-3 text-2xs disabled:transform-none disabled:cursor-default disabled:opacity-30 disabled:transition-none sm:ml-4 sm:mt-0'
         >
-          <PlusIcon className='mr-1.5 h-3 w-3' />
-          <div className='text-violet-100'>Add</div>
+          <PlusIcon className='mr-1 h-3 w-3' />
+          <div className='text-2xs leading-none'>Add</div>
         </button>
       </div>
     </form>

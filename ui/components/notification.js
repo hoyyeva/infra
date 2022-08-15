@@ -9,7 +9,7 @@ export default function Notification({ show, setShow, text }) {
       aria-live='assertive'
       className='pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6'
     >
-      <div className='fixed bottom-6 right-6 flex w-full flex-col items-center space-y-4 sm:items-end'>
+      <div className='fixed bottom-10 right-6 flex w-full flex-col items-center space-y-4 sm:items-end'>
         <Transition
           show={show}
           as={Fragment}

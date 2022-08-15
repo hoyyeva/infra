@@ -10,12 +10,12 @@ import { useAdmin } from '../../lib/admin'
 import Dashboard from '../../components/layouts/dashboard'
 import Table from '../../components/table'
 import EmptyTable from '../../components/empty-table'
-import PageHeader from '../../components/page-header'
 import Sidebar from '../../components/sidebar'
 import Metadata from '../../components/metadata'
 import RemoveButton from '../../components/remove-button'
 import Pagination from '../../components/pagination'
 import { ViewGridIcon } from '@heroicons/react/outline'
+import PageHeader from '../../components/page-header'
 
 const columns = [
   {
@@ -111,83 +111,88 @@ export default function Providers() {
       <Head>
         <title>Identity Providers - Infra</title>
       </Head>
-      {!loading && (
-        <div className='flex h-full flex-1'>
-          <div className='flex flex-1 flex-col space-y-4'>
-            <PageHeader
-              header='Providers'
-              buttonHref='/providers/add'
-              buttonLabel='Provider'
-            />
-            {error?.status ? (
-              <div className='my-20 text-center text-sm font-light text-gray-300'>
-                {error?.info?.message}
-              </div>
-            ) : (
-              <div className='flex min-h-0 flex-1 flex-col overflow-y-auto px-6'>
-                <Table
-                  {...table}
-                  getRowProps={row => ({
-                    onClick: () => setSelected(row.original),
-                    className:
-                      selected?.id === row.original.id
-                        ? 'bg-gray-900/50'
-                        : 'cursor-pointer',
-                  })}
-                />
-                {providers?.length === 0 && (
-                  <EmptyTable
-                    title='There are no providers'
-                    subtitle={
-                      <>
-                        Identity providers allow you to connect your existing
-                        users &amp; groups to Infra.
-                      </>
-                    }
-                    iconPath='/providers.svg'
-                    icon={<ViewGridIcon className='dark:text-white' />}
-                    buttonHref='/providers/add'
-                    buttonText='Provider'
+      <div className='pb-6'>
+        <PageHeader
+          header='Providers'
+          buttonHref={admin && '/providers/add'}
+          buttonLabel='Provider'
+        />
+      </div>
+      <div className='px-4 sm:px-6 md:px-0'>
+        {' '}
+        {!loading && (
+          <div className='flex h-full flex-1'>
+            <div className='flex flex-1 flex-col space-y-4'>
+              {error?.status ? (
+                <div className='my-20 text-center text-sm font-light text-gray-300'>
+                  {error?.info?.message}
+                </div>
+              ) : (
+                <div className='flex min-h-0 flex-1 flex-col overflow-y-auto px-0 md:px-6 xl:px-0'>
+                  <Table
+                    {...table}
+                    getRowProps={row => ({
+                      onClick: () => setSelected(row.original),
+                      className:
+                        selected?.id === row.original.id
+                          ? 'bg-gray-900/50'
+                          : 'cursor-pointer',
+                    })}
                   />
-                )}
-              </div>
-            )}
-            {totalPages > 1 && (
-              <Pagination
-                curr={page}
-                totalPages={totalPages}
-                totalCount={totalCount}
-                limit={limit}
-              ></Pagination>
-            )}
-          </div>
-          {selected && (
-            <Sidebar
-              onClose={() => setSelected(null)}
-              title={selected.name}
-              iconPath={`/providers/${selected.kind}.svg`}
-            >
-              <SidebarContent
-                provider={selected}
-                admin={admin}
-                onDelete={() => {
-                  mutate(async ({ items: providers } = { items: [] }) => {
-                    await fetch(`/api/providers/${selected.id}`, {
-                      method: 'DELETE',
+                  {providers?.length === 0 && (
+                    <EmptyTable
+                      title='There are no providers'
+                      subtitle={
+                        <>
+                          Identity providers allow you to connect your existing
+                          users &amp; groups to Infra.
+                        </>
+                      }
+                      iconPath='/providers.svg'
+                      icon={<ViewGridIcon className='dark:text-white' />}
+                      buttonHref='/providers/add'
+                      buttonText='Provider'
+                    />
+                  )}
+                </div>
+              )}
+              {totalPages > 1 && (
+                <Pagination
+                  curr={page}
+                  totalPages={totalPages}
+                  totalCount={totalCount}
+                  limit={limit}
+                ></Pagination>
+              )}
+            </div>
+            {selected && (
+              <Sidebar
+                onClose={() => setSelected(null)}
+                title={selected.name}
+                iconPath={`/providers/${selected.kind}.svg`}
+              >
+                <SidebarContent
+                  provider={selected}
+                  admin={admin}
+                  onDelete={() => {
+                    mutate(async ({ items: providers } = { items: [] }) => {
+                      await fetch(`/api/providers/${selected.id}`, {
+                        method: 'DELETE',
+                      })
+
+                      return {
+                        items: providers.filter(p => p?.id !== selected.id),
+                      }
                     })
 
-                    return {
-                      items: providers.filter(p => p?.id !== selected.id),
-                    }
-                  })
-
-                  setSelected(null)
-                }}
-              />
-            </Sidebar>
-          )}
-        </div>
-      )}
+                    setSelected(null)
+                  }}
+                />
+              </Sidebar>
+            )}
+          </div>
+        )}
+      </div>
     </>
   )
 }

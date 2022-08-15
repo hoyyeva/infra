@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import Head from 'next/head'
 import Link from 'next/link'
 
 import Fullscreen from '../../components/layouts/fullscreen'
@@ -42,7 +41,7 @@ export default function PasswordReset() {
         throw data
       }
 
-      router.replace('/settings?resetPassword=success')
+      router.replace('/settings?tab=account&resetPassword=success')
     } catch (e) {
       if (e.fieldErrors) {
         const errors = {}
@@ -58,79 +57,68 @@ export default function PasswordReset() {
   }
 
   return (
-    <div className='px-3 pt-8 pb-3'>
-      <Head>
-        <title>Password Reset</title>
-      </Head>
-      <div className='mx-auto flex w-full max-w-xs flex-col items-center justify-center'>
-        <div className='mb-4 rounded-full border border-violet-200/25 p-2.5'>
-          <img alt='infra icon' className='h-12 w-12' src='/infra-color.svg' />
-        </div>
-        <h1 className='text-base font-bold leading-snug'>Reset Password</h1>
+    <form onSubmit={onSubmit} className='flex flex-col'>
+      <div className='my-2 w-full'>
+        <label htmlFor='name' className='text-2xs uppercase dark:text-gray-400'>
+          New Password
+        </label>
+        <input
+          required
+          name='password'
+          type='password'
+          placeholder='enter your new password'
+          onChange={e => {
+            setPassword(e.target.value)
+            setErrors({})
+            setError('')
+          }}
+          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+            errors.password ? 'border-pink-500' : 'border-gray-800'
+          }`}
+        />
+        {errors.password && <ErrorMessage message={errors.password} />}
       </div>
-      <form onSubmit={onSubmit} className='mt-12 flex flex-col'>
-        <div className='my-2 w-full'>
-          <label htmlFor='name' className='text-3xs uppercase text-gray-500'>
-            New Password
-          </label>
-          <input
-            required
-            name='password'
-            type='password'
-            placeholder='enter your new password'
-            onChange={e => {
-              setPassword(e.target.value)
-              setErrors({})
-              setError('')
-            }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.password ? 'border-pink-500/60' : ''
-            }`}
-          />
-          {errors.password && <ErrorMessage message={errors.password} />}
-        </div>
-        <div className='my-2 w-full'>
-          <label
-            htmlFor='password'
-            className='text-3xs uppercase text-gray-500'
-          >
-            Confirm New Password
-          </label>
-          <input
-            required
-            name='confirmPassword'
-            type='password'
-            placeholder='confirm your new password'
-            onChange={e => {
-              setConfirmPassword(e.target.value)
-              setErrors({})
-              setError('')
-            }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.confirmPassword ? 'border-pink-500/60' : ''
-            }`}
-          />
-          {errors.confirmPassword && (
-            <ErrorMessage message={errors.confirmPassword} />
-          )}
-        </div>
-        <div className='mt-6 flex flex-row items-center justify-end'>
-          <Link href='/settings'>
-            <a className='border-0 px-6 py-3 text-2xs uppercase text-gray-400 hover:text-white focus:text-white focus:outline-none'>
-              Cancel
-            </a>
-          </Link>
-          <button
-            type='submit'
-            disabled={!password || !confirmPassword}
-            className='rounded-md border border-violet-300 px-5 py-2.5 text-center text-2xs text-violet-100 disabled:opacity-30'
-          >
-            Reset
-          </button>
-        </div>
-        {error && <ErrorMessage message={error} center />}
-      </form>
-    </div>
+      <div className='my-2 w-full'>
+        <label
+          htmlFor='password'
+          className='text-2xs uppercase dark:text-gray-400'
+        >
+          Confirm New Password
+        </label>
+        <input
+          required
+          name='confirmPassword'
+          type='password'
+          placeholder='confirm your new password'
+          onChange={e => {
+            setConfirmPassword(e.target.value)
+            setErrors({})
+            setError('')
+          }}
+          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+            errors.confirmPassword ? 'border-pink-500' : 'border-gray-800'
+          }`}
+        />
+        {errors.confirmPassword && (
+          <ErrorMessage message={errors.confirmPassword} />
+        )}
+      </div>
+      <div className='mt-6 flex flex-row items-center justify-end'>
+        <Link href='/settings'>
+          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
+            Cancel
+          </a>
+        </Link>
+        <button
+          type='submit'
+          disabled={!password || !confirmPassword}
+          className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
+        >
+          Reset
+        </button>
+      </div>
+      {error && <ErrorMessage message={error} center />}
+    </form>
   )
 }
 

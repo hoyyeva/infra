@@ -11,7 +11,6 @@ import { useAdmin } from '../../lib/admin'
 import Dashboard from '../../components/layouts/dashboard'
 import Table from '../../components/table'
 import EmptyTable from '../../components/empty-table'
-import PageHeader from '../../components/page-header'
 import Sidebar from '../../components/sidebar'
 import RoleSelect from '../../components/role-select'
 import GrantForm from '../../components/grant-form'
@@ -19,6 +18,7 @@ import EmptyData from '../../components/empty-data'
 import Metadata from '../../components/metadata'
 import RemoveButton from '../../components/remove-button'
 import Pagination from '../../components/pagination'
+import PageHeader from '../../components/page-header'
 
 function parent(resource = '') {
   const parts = resource.split('.')
@@ -362,78 +362,82 @@ export default function Destinations() {
       <Head>
         <title>Clusters - Infra</title>
       </Head>
-      {!loading && (
-        <div className='flex h-full flex-1'>
-          <div className='flex min-w-[32em] flex-1 flex-col space-y-4'>
-            <PageHeader
-              header='Clusters'
-              buttonHref={admin && '/destinations/add'}
-              buttonLabel='Cluster'
-            />
-            {error?.status ? (
-              <div className='my-20 text-center text-sm font-light text-gray-300'>
-                {error?.info?.message}
-              </div>
-            ) : (
-              <div className='mx-6 flex min-h-0 flex-1 flex-col overflow-y-auto'>
-                <Table
-                  columns={columns}
-                  data={data}
-                  getRowProps={row => ({
-                    onClick: () => setSelected(row.original),
-                    className:
-                      selected?.resource === row.original.resource
-                        ? 'bg-gray-900/50'
-                        : 'cursor-pointer',
-                  })}
-                />
-                {destinations?.length === 0 && (
-                  <EmptyTable
-                    title='There are no clusters'
-                    subtitle='There is currently no cluster connected to Infra'
-                    iconPath='/destinations.svg'
-                    icon={<ChipIcon className='dark:text-white' />}
-                    buttonHref={admin && '/destinations/add'}
-                    buttonText='Cluster'
+      <div className='pb-6'>
+        <PageHeader
+          header='Clusters'
+          buttonHref={admin && '/destinations/add'}
+          buttonLabel='Cluster'
+        />
+      </div>
+      <div className='px-4 sm:px-6 md:px-0'>
+        {!loading && (
+          <div className='flex h-full flex-1'>
+            <div className='flex min-w-[32em] flex-1 flex-col space-y-4'>
+              {error?.status ? (
+                <div className='my-20 text-center text-sm font-light text-gray-300'>
+                  {error?.info?.message}
+                </div>
+              ) : (
+                <div className='flex min-h-0 flex-1 flex-col overflow-y-auto px-0 md:px-6 xl:px-0'>
+                  <Table
+                    columns={columns}
+                    data={data}
+                    getRowProps={row => ({
+                      onClick: () => setSelected(row.original),
+                      className:
+                        selected?.resource === row.original.resource
+                          ? 'bg-gray-900/50'
+                          : 'cursor-pointer',
+                    })}
                   />
-                )}
-              </div>
-            )}
-            {totalPages > 1 && (
-              <Pagination
-                curr={page}
-                totalPages={totalPages}
-                totalCount={totalCount}
-                limit={limit}
-              ></Pagination>
-            )}
-          </div>
-          {selected && (
-            <Sidebar
-              onClose={() => setSelected(null)}
-              title={selected.resource}
-              iconPath='/destinations.svg'
-            >
-              <Details
-                destination={selected}
-                onDelete={() => {
-                  mutate(async ({ items: destinations } = { items: [] }) => {
-                    await fetch(`/api/destinations/${selected.id}`, {
-                      method: 'DELETE',
+                  {destinations?.length === 0 && (
+                    <EmptyTable
+                      title='There are no clusters'
+                      subtitle='There is currently no cluster connected to Infra'
+                      iconPath='/destinations.svg'
+                      icon={<ChipIcon className='dark:text-white' />}
+                      buttonHref={admin && '/destinations/add'}
+                      buttonText='Cluster'
+                    />
+                  )}
+                </div>
+              )}
+              {totalPages > 1 && (
+                <Pagination
+                  curr={page}
+                  totalPages={totalPages}
+                  totalCount={totalCount}
+                  limit={limit}
+                ></Pagination>
+              )}
+            </div>
+            {selected && (
+              <Sidebar
+                onClose={() => setSelected(null)}
+                title={selected.resource}
+                iconPath='/destinations.svg'
+              >
+                <Details
+                  destination={selected}
+                  onDelete={() => {
+                    mutate(async ({ items: destinations } = { items: [] }) => {
+                      await fetch(`/api/destinations/${selected.id}`, {
+                        method: 'DELETE',
+                      })
+
+                      return {
+                        items: destinations?.filter(d => d?.id !== selected.id),
+                      }
                     })
 
-                    return {
-                      items: destinations?.filter(d => d?.id !== selected.id),
-                    }
-                  })
-
-                  setSelected(null)
-                }}
-              />
-            </Sidebar>
-          )}
-        </div>
-      )}
+                    setSelected(null)
+                  }}
+                />
+              </Sidebar>
+            )}
+          </div>
+        )}
+      </div>
     </>
   )
 }

@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { useState, useRef } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 import { useRouter } from 'next/router'
+import { UserGroupIcon } from '@heroicons/react/outline'
 
 import ErrorMessage from '../../components/error-message'
-import Fullscreen from '../../components/layouts/fullscreen'
 import TypeaheadCombobox from '../../components/typeahead-combobox'
-import { UserGroupIcon } from '@heroicons/react/outline'
+import Dashboard from '../../components/layouts/dashboard'
 
 function EmailsSelectInput({ selectedEmails, setSelectedEmails }) {
   const { data: { items: users } = { items: [] } } = useSWR(
@@ -34,7 +34,7 @@ function EmailsSelectInput({ selectedEmails, setSelectedEmails }) {
   }
 
   return (
-    <div className='px-4 py-3 dark:bg-gray-900'>
+    <div className='bg-gray-100 px-4 py-3 dark:bg-gray-900'>
       <TypeaheadCombobox
         selectedEmails={selectedEmails}
         setSelectedEmails={setSelectedEmails}
@@ -129,16 +129,16 @@ export default function GroupsAdd() {
   return (
     <>
       <Head>Create Group</Head>
-      <div className='space-y-4 pt-5 pb-4'>
+      <div className='space-y-4 px-0 pt-5 pb-4 md:px-6 xl:px-0'>
         <div className='flex flex-col'>
-          <div className='flex flex-row items-center space-x-2 px-4'>
+          <div className='flex flex-row items-center space-x-2'>
             <UserGroupIcon className='h-6 w-6 dark:text-white' />
             <div>
               <h1 className='text-sm'>Create Group</h1>
             </div>
           </div>
           <div className='mt-6 flex flex-col space-y-1'>
-            <div className='mt-4 px-4'>
+            <div className='mt-4'>
               <label className='text-2xs uppercase dark:text-gray-400'>
                 Name Your Group
               </label>
@@ -162,7 +162,7 @@ export default function GroupsAdd() {
               />
             </section>
           </div>
-          <div className='mt-6 flex flex-row items-center justify-end px-4'>
+          <div className='mt-6 flex flex-row items-center justify-end'>
             <Link href='/groups'>
               <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
                 Cancel
@@ -184,4 +184,7 @@ export default function GroupsAdd() {
   )
 }
 
-GroupsAdd.layout = page => <Fullscreen closeHref='/groups'>{page}</Fullscreen>
+// GroupsAdd.layout = page => <Fullscreen closeHref='/groups'>{page}</Fullscreen>
+GroupsAdd.layout = page => {
+  return <Dashboard>{page}</Dashboard>
+}
