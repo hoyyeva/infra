@@ -103,7 +103,7 @@ export default function PasswordReset() {
           <ErrorMessage message={errors.confirmPassword} />
         )}
       </div>
-      <div className='mt-6 flex flex-row items-center justify-end'>
+      <div className='mt-6 flex flex-row items-center justify-start'>
         <Link href='/settings'>
           <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
             Cancel

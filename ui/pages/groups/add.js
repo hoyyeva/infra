@@ -128,8 +128,10 @@ export default function GroupsAdd() {
 
   return (
     <>
-      <Head>Create Group</Head>
-      <div className='space-y-4 px-0 pt-5 pb-4 md:px-6 xl:px-0'>
+      <Head>
+        <title>Create Group</title>
+      </Head>
+      <div className='space-y-4 px-4 py-5 md:px-6 xl:px-0'>
         <div className='flex flex-col'>
           <div className='flex flex-row items-center space-x-2'>
             <UserGroupIcon className='h-6 w-6 dark:text-white' />
@@ -162,7 +164,7 @@ export default function GroupsAdd() {
               />
             </section>
           </div>
-          <div className='mt-6 flex flex-row items-center justify-end'>
+          <div className='mt-6 flex flex-row items-center justify-start'>
             <Link href='/groups'>
               <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
                 Cancel

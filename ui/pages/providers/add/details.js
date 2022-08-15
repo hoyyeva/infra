@@ -288,7 +288,7 @@ export default function ProvidersAddDetails() {
             </div>
           </div>
         )}
-        <div className='mt-6 flex flex-row items-center justify-end'>
+        <div className='mt-6 flex flex-row items-center justify-start'>
           <Link href='/providers'>
             <a className='border-0 px-6 py-3 text-2xs uppercase text-gray-400 hover:text-white focus:text-white focus:outline-none'>
               Cancel

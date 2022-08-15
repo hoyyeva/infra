@@ -1,23 +1,26 @@
+import { UserIcon } from '@heroicons/react/outline'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useServerConfig } from '../../lib/serverconfig'
 
 import ErrorMessage from '../../components/error-message'
-import Fullscreen from '../../components/layouts/fullscreen'
+import Dashboard from '../../components/layouts/dashboard'
 
 function AddUser({ email, onChange, onKeyDown, onSubmit, error }) {
   return (
     <form onSubmit={onSubmit} className='flex flex-col'>
       <div className='flex flex-row items-center space-x-2'>
-        <img alt='users' src='/users.svg' className='h-6 w-6' />
+        <UserIcon className='h-5 w-5 dark:text-white' />
         <div>
-          <h1 className='text-2xs'>Add User</h1>
+          <h1 className='text-sm'>Add User</h1>
         </div>
       </div>
       <div className='mt-6 flex flex-col space-y-1'>
         <div className='mt-4'>
-          <label className='text-3xs uppercase text-gray-400'>User Email</label>
+          <label className='text-2xs uppercase dark:text-gray-400'>
+            User Email
+          </label>
           <input
             autoFocus
             spellCheck='false'
@@ -26,23 +29,23 @@ function AddUser({ email, onChange, onKeyDown, onSubmit, error }) {
             value={email}
             onChange={onChange}
             onKeyDown={onKeyDown}
-            className={`border-gray-950 w-full border-b bg-transparent px-px py-3 text-3xs placeholder:italic focus:border-b focus:border-gray-200 focus:outline-none ${
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
               error ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
         </div>
         {error && <ErrorMessage message={error} />}
       </div>
-      <div className='mt-6 flex flex-row items-center justify-end'>
+      <div className='mt-6 flex flex-row items-center justify-start'>
         <Link href='/users'>
-          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase text-gray-400 hover:text-white'>
+          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
             Cancel
           </a>
         </Link>
         <button
           type='submit'
           disabled={!email}
-          className='flex-none self-end rounded-md border border-violet-300 px-4 py-2 text-2xs text-violet-100 disabled:opacity-10'
+          className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
         >
           Add User
         </button>
@@ -55,9 +58,9 @@ function UserOneTimePassword({ isEmailConfigured, password, onSubmit }) {
   return (
     <div className='flex flex-col'>
       <div className='flex flex-row items-center space-x-2'>
-        <img alt='users icon' src='/users.svg' className='h-6 w-6' />
+        <UserIcon className='h-5 w-5 dark:text-white' />
         <div>
-          <h1 className='text-2xs'>Add User</h1>
+          <h1 className='text-sm'>Add User</h1>
         </div>
       </div>
       {isEmailConfigured ? (
@@ -85,12 +88,12 @@ function UserOneTimePassword({ isEmailConfigured, password, onSubmit }) {
       <div className='mt-6 flex flex-row items-center justify-end'>
         <button
           onClick={onSubmit}
-          className='border-0 px-4 py-2 text-4xs uppercase text-gray-400 hover:text-white'
+          className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
         >
           Add Another
         </button>
         <Link href='/users'>
-          <a className='flex-none self-end rounded-md border border-violet-300 px-8 py-2 text-2xs text-violet-100 disabled:opacity-10'>
+          <a className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'>
             Done
           </a>
         </Link>
@@ -172,7 +175,7 @@ export default function UsersAdd() {
       <Head>
         <title>Add User</title>
       </Head>
-      <div className='space-y-4 px-4 pt-5 pb-4'>
+      <div className='space-y-4 px-4 py-5 md:px-6 xl:px-0'>
         {state === 'add' && (
           <AddUser
             email={email}
@@ -199,4 +202,7 @@ export default function UsersAdd() {
   )
 }
 
-UsersAdd.layout = page => <Fullscreen closeHref='/users'>{page}</Fullscreen>
+// UsersAdd.layout = page => <Fullscreen closeHref='/users'>{page}</Fullscreen>
+UsersAdd.layout = page => {
+  return <Dashboard>{page}</Dashboard>
+}
