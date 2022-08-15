@@ -14,39 +14,92 @@ import GrantForm from '../../components/grant-form'
 import PasswordReset from './password-reset'
 import PageHeader from '../../components/page-header'
 
-function AdminGrant({ name, showRemove, onRemove, message = '' }) {
+function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
   const [open, setOpen] = useState(false)
+  const [deleteId, setDeleteId] = useState(null)
 
   return (
-    <div className='group flex items-center justify-between py-1 text-2xs'>
-      <div className='py-1.5'>{name}</div>
-      {showRemove && (
-        <div className='flex justify-end text-right opacity-0 group-hover:opacity-100'>
-          <button
-            onClick={() => setOpen(true)}
-            className='-mr-2 flex-none cursor-pointer px-2 py-1 text-2xs text-gray-500 hover:text-violet-100'
-          >
-            Revoke
-          </button>
-          <DeleteModal
-            open={open}
-            setOpen={setOpen}
-            primaryButtonText='Revoke'
-            onSubmit={onRemove}
-            title='Revoke Admin'
-            message={
-              !message ? (
-                <>
-                  Are you sure you want to revoke admin access for{' '}
-                  <span className='font-bold text-white'>{name}</span>?
-                </>
-              ) : (
-                message
-              )
-            }
-          />
+    <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+      <div className='inline-block min-w-full py-2 px-4 align-middle md:px-6 lg:px-8'>
+        <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+          <table className='min-w-full divide-y divide-gray-300'>
+            <thead className='bg-gray-50'>
+              <tr>
+                <th
+                  scope='col'
+                  className='py-3.5 pl-4 pr-3 text-left text-xs font-semibold text-gray-900 sm:pl-6'
+                >
+                  Infra Admin
+                </th>
+              </tr>
+            </thead>
+            <tbody className='bg-white'>
+              {grants
+                ?.sort(sortBySubject)
+                ?.map(grant => {
+                  const message =
+                    grant?.user === auth?.id
+                      ? 'Are you sure you want to revoke your own admin access?'
+                      : selfGroups?.some(g => g.id === grant.group)
+                      ? `Are you sure you want to revoke this group's admin access? You are a member of this group.`
+                      : undefined
+
+                  const name =
+                    users?.find(u => grant.user === u.id)?.name ||
+                    groups?.find(group => grant.group === group.id)?.name ||
+                    ''
+
+                  return { ...grant, message, name }
+                })
+                ?.map(grant => {
+                  return (
+                    <div key={grant.id}>
+                      <tr>
+                        <td className='whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6'>
+                          <div>{grant.name}</div>
+                          <div>
+                            <button
+                              onClick={() => {
+                                setDeleteId(grant.id)
+                                setOpen(true)
+                              }}
+                              className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
+                            >
+                              Revoke
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <DeleteModal
+                        open={open}
+                        setOpen={setOpen}
+                        primaryButtonText='Revoke'
+                        onSubmit={() => {
+                          onRemove(deleteId)
+                          setOpen(false)
+                        }}
+                        title='Revoke Admin'
+                        message={
+                          !grant.message ? (
+                            <>
+                              Are you sure you want to revoke admin access for{' '}
+                              <span className='font-bold text-white'>
+                                {grant.name}
+                              </span>
+                              ?
+                            </>
+                          ) : (
+                            grant.message
+                          )
+                        }
+                      />
+                    </div>
+                  )
+                })}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -125,26 +178,8 @@ export default function Settings() {
         <title>Settings - Infra</title>
       </Head>
       <div className='pb-6'>
-        <div className='sm:hidden'>
-          <label htmlFor='tabs' className='sr-only'>
-            Select a tab
-          </label>
-          {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-          <select
-            id='tabs'
-            name='tabs'
-            className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
-            defaultValue={tabs.find(tab => tab === current)}
-          >
-            {tabs.map(tab => (
-              <option key={tab}>{tab}</option>
-            ))}
-          </select>
-        </div>
-        <div className='hidden sm:block'>
-          <PageHeader header='Settings' />
-        </div>
-        <div className='hidden px-4 sm:block sm:px-6 xl:px-0'>
+        <PageHeader header='Settings' />
+        <div className=' px-4 sm:px-6 xl:px-0'>
           <div className='border-b border-gray-200'>
             <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
               {tabs.map(tab => (
@@ -204,35 +239,18 @@ export default function Settings() {
                   mutate({ items: [...grants, await res.json()] })
                 }}
               />
-              <div className='mt-6'>
-                {grants
-                  ?.sort(sortBySubject)
-                  ?.map(grant => {
-                    const message =
-                      grant?.user === auth?.id
-                        ? 'Are you sure you want to revoke your own admin access?'
-                        : selfGroups?.some(g => g.id === grant.group)
-                        ? `Are you sure you want to revoke this group's admin access? You are a member of this group.`
-                        : undefined
-
-                    return { ...grant, message }
-                  })
-                  ?.map(g => (
-                    <AdminGrant
-                      key={g.id}
-                      name={
-                        users?.find(u => g.user === u.id)?.name ||
-                        groups?.find(group => g.group === group.id)?.name ||
-                        ''
-                      }
-                      showRemove={grants?.length > 1}
-                      message={g.message}
-                      onRemove={async () => {
-                        await fetch(`/api/grants/${g.id}`, { method: 'DELETE' })
-                        mutate({ items: grants?.filter(x => x.id !== g.id) })
-                      }}
-                    />
-                  ))}
+              <div className='py-6'>
+                <AdminList
+                  grants={grants}
+                  users={users}
+                  groups={groups}
+                  selfGroups={selfGroups}
+                  auth={auth}
+                  onRemove={async grantId => {
+                    await fetch(`/api/grants/${grantId}`, { method: 'DELETE' })
+                    mutate({ items: grants?.filter(x => x.id !== grantId) })
+                  }}
+                />
               </div>
             </div>
           </div>

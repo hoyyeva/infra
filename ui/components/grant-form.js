@@ -38,7 +38,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
         setSelected(null)
       }}
     >
-      <div className='flex flex-1 items-center border-b border-gray-800'>
+      <div className='flex flex-1 items-center border-b border-gray-300'>
         <Combobox
           as='div'
           className='relative flex-1'
@@ -50,7 +50,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
           }}
         >
           <Combobox.Input
-            className='relative w-full bg-transparent py-3 pr-2 text-xs placeholder:italic focus:outline-none disabled:opacity-30'
+            className='relative w-full bg-transparent py-3 pr-2 text-xs placeholder:italic focus:border-gray-800 focus:outline-none disabled:opacity-30 dark:border-gray-900 dark:focus:border-gray-200'
             placeholder='User or group'
             onChange={e => setQuery(e.target.value)}
             onFocus={() => {
@@ -90,7 +90,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
         <button
           disabled={!selected}
           type='submit'
-          className='flex h-8 cursor-pointer items-center rounded-md border border-violet-300 px-3 py-3 text-2xs disabled:transform-none disabled:cursor-default disabled:opacity-30 disabled:transition-none sm:ml-4 sm:mt-0'
+          className='flex items-center rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
         >
           <PlusIcon className='mr-1 h-3 w-3' />
           <div className='text-2xs leading-none'>Add</div>
