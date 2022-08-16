@@ -100,33 +100,6 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
   )
 }
 
-// function AccountPasswordReset({ resetPassword }) {
-//   console.log(resetPassword)
-
-//   return (
-//     <>
-//       <div className='pt-6'>
-//         <div className='flex flex-row items-center space-x-2'>
-//           <KeyIcon className='h-6 w-6 dark:text-white' />
-//           <div>
-//             <h1 className='text-sm'>Reset Password</h1>
-//           </div>
-//         </div>
-//         <div className='flex flex-col space-y-2 pt-6'>
-//           <PasswordReset />
-//         </div>
-//       </div>
-//       {resetPassword && (
-//         <Notification
-//           show={showNotification}
-//           setShow={setshowNotification}
-//           text='Password Successfully Reset'
-//         />
-//       )}
-//     </>
-//   )
-// }
-
 export default function Settings() {
   const { data: auth } = useSWR('/api/users/self')
   const { admin } = useAdmin()
@@ -213,13 +186,15 @@ export default function Settings() {
                 <PasswordReset />
               </div>
             </div>
-            {resetPassword && (
-              <Notification
-                show={showNotification}
-                setShow={setshowNotification}
-                text='Password Successfully Reset'
-              />
-            )}
+
+            <Notification
+              show={showNotification}
+              text='Password Successfully Reset'
+              onClose={() => {
+                setshowNotification(false)
+                router.replace('/settings?tab=account')
+              }}
+            />
           </div>
         )}
         {current === 'admin' && (

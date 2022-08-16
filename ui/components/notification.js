@@ -3,7 +3,7 @@ import { Transition } from '@headlessui/react'
 import { CheckCircleIcon } from '@heroicons/react/outline'
 import { XIcon } from '@heroicons/react/solid'
 
-export default function Notification({ show, setShow, text }) {
+export default function Notification({ show, text, onClose }) {
   return (
     <div
       aria-live='assertive'
@@ -37,7 +37,7 @@ export default function Notification({ show, setShow, text }) {
                     data-testid='notification-remove-button'
                     type='button'
                     className='inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-none'
-                    onClick={() => setShow(false)}
+                    onClick={onClose}
                   >
                     <XIcon className='h-5 w-5' aria-hidden='true' />
                   </button>

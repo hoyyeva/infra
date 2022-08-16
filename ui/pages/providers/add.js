@@ -35,7 +35,7 @@ export default function ProvidersAddDetails() {
 
   const { mutate } = useSWRConfig()
 
-  const [kind, setKind] = useState('okta')
+  const [kind, setKind] = useState(providers[0].kind)
   const [url, setURL] = useState(kind === 'google' ? 'accounts.google.com' : '')
   const [clientID, setClientID] = useState('')
   const [clientSecret, setClientSecret] = useState('')
@@ -154,7 +154,7 @@ export default function ProvidersAddDetails() {
       <Head>
         <title>Add Identity Provider - {kind}</title>
       </Head>
-      <div className='flex flex-col'>
+      <div className='flex flex-col space-y-4 px-4 py-5 md:px-6 xl:px-0'>
         <div className='flex flex-row items-center space-x-2 pb-5'>
           <ViewGridIcon className='h-6 w-6 dark:text-white' />
           <h1 className='text-sm'>Connect an Identity Provider</h1>
@@ -172,7 +172,7 @@ export default function ProvidersAddDetails() {
               </div>
               <div className='mt-5 space-y-6 md:col-span-2 md:mt-0'>
                 <div className='grid grid-cols-3 gap-6'>
-                  <div className='col-span-3 space-y-6 sm:col-span-2'>
+                  <div className='col-span-3 space-y-6 xl:col-span-2'>
                     <div>
                       <div className='pb-3'>
                         <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
