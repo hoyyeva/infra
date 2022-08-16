@@ -11,7 +11,7 @@ import Dashboard from '../../components/layouts/dashboard'
 import DeleteModal from '../../components/delete-modal'
 import Notification from '../../components/notification'
 import GrantForm from '../../components/grant-form'
-import PasswordReset from './password-reset'
+import PasswordReset from '../../components/password-reset'
 import PageHeader from '../../components/page-header'
 
 function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
@@ -51,51 +51,47 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
 
                   return { ...grant, message, name }
                 })
-                ?.map(grant => {
-                  return (
-                    <div key={grant.id}>
-                      <tr>
-                        <td className='whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6'>
-                          <div>{grant.name}</div>
-                          <div>
-                            <button
-                              onClick={() => {
-                                setDeleteId(grant.id)
-                                setOpen(true)
-                              }}
-                              className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
-                            >
-                              Revoke
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <DeleteModal
-                        open={open}
-                        setOpen={setOpen}
-                        primaryButtonText='Revoke'
-                        onSubmit={() => {
-                          onRemove(deleteId)
-                          setOpen(false)
-                        }}
-                        title='Revoke Admin'
-                        message={
-                          !grant.message ? (
-                            <>
-                              Are you sure you want to revoke admin access for{' '}
-                              <span className='font-bold text-white'>
-                                {grant.name}
-                              </span>
-                              ?
-                            </>
-                          ) : (
-                            grant.message
-                          )
-                        }
-                      />
-                    </div>
-                  )
-                })}
+                ?.map(grant => (
+                  <tr key={grant.id}>
+                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6'>
+                      <div>{grant.name}</div>
+                      <div>
+                        <button
+                          onClick={() => {
+                            setDeleteId(grant.id)
+                            setOpen(true)
+                          }}
+                          className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
+                        >
+                          Revoke
+                        </button>
+                      </div>
+                    </td>
+                    <DeleteModal
+                      open={open}
+                      setOpen={setOpen}
+                      primaryButtonText='Revoke'
+                      onSubmit={() => {
+                        onRemove(deleteId)
+                        setOpen(false)
+                      }}
+                      title='Revoke Admin'
+                      message={
+                        !grant.message ? (
+                          <>
+                            Are you sure you want to revoke admin access for{' '}
+                            <span className='font-bold text-white'>
+                              {grant.name}
+                            </span>
+                            ?
+                          </>
+                        ) : (
+                          grant.message
+                        )
+                      }
+                    />
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -104,34 +100,32 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
   )
 }
 
-function AccountPasswordReset({ resetPassword }) {
-  const [showNotification, setshowNotification] = useState(
-    resetPassword === 'success'
-  )
+// function AccountPasswordReset({ resetPassword }) {
+//   console.log(resetPassword)
 
-  return (
-    <>
-      <div className='pt-6'>
-        <div className='flex flex-row items-center space-x-2'>
-          <KeyIcon className='h-6 w-6 dark:text-white' />
-          <div>
-            <h1 className='text-sm'>Reset Password</h1>
-          </div>
-        </div>
-        <div className='flex flex-col space-y-2 pt-6'>
-          <PasswordReset />
-        </div>
-      </div>
-      {resetPassword && (
-        <Notification
-          show={showNotification}
-          setShow={setshowNotification}
-          text='Password Successfully Reset'
-        />
-      )}
-    </>
-  )
-}
+//   return (
+//     <>
+//       <div className='pt-6'>
+//         <div className='flex flex-row items-center space-x-2'>
+//           <KeyIcon className='h-6 w-6 dark:text-white' />
+//           <div>
+//             <h1 className='text-sm'>Reset Password</h1>
+//           </div>
+//         </div>
+//         <div className='flex flex-col space-y-2 pt-6'>
+//           <PasswordReset />
+//         </div>
+//       </div>
+//       {resetPassword && (
+//         <Notification
+//           show={showNotification}
+//           setShow={setshowNotification}
+//           text='Password Successfully Reset'
+//         />
+//       )}
+//     </>
+//   )
+// }
 
 export default function Settings() {
   const { data: auth } = useSWR('/api/users/self')
@@ -142,6 +136,9 @@ export default function Settings() {
 
   const [tabs, setTabs] = useState([])
   const [current, setCurrent] = useState(tab === undefined ? null : tab)
+  const [showNotification, setshowNotification] = useState(
+    resetPassword && resetPassword === 'success'
+  )
 
   const { data: { items: users } = {} } = useSWR('/api/users?limit=1000')
   const { data: { items: groups } = {} } = useSWR('/api/groups?limit=1000')
@@ -205,7 +202,24 @@ export default function Settings() {
       <div className='px-4 sm:px-6 xl:px-0'>
         {current === 'account' && (
           <div className='flex flex-1 flex-col space-y-8'>
-            <AccountPasswordReset resetPassword={resetPassword} />
+            <div className='pt-6'>
+              <div className='flex flex-row items-center space-x-2'>
+                <KeyIcon className='h-6 w-6 dark:text-white' />
+                <div>
+                  <h1 className='text-sm'>Reset Password</h1>
+                </div>
+              </div>
+              <div className='flex flex-col space-y-2 pt-6'>
+                <PasswordReset />
+              </div>
+            </div>
+            {resetPassword && (
+              <Notification
+                show={showNotification}
+                setShow={setshowNotification}
+                text='Password Successfully Reset'
+              />
+            )}
           </div>
         )}
         {current === 'admin' && (

@@ -141,7 +141,7 @@ export default function GroupsAdd() {
           </div>
           <div className='mt-6 flex flex-col space-y-1'>
             <div className='mt-4'>
-              <label className='text-2xs uppercase dark:text-gray-400'>
+              <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
                 Name Your Group
               </label>
               <input

@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import Fullscreen from '../../components/layouts/fullscreen'
-import ErrorMessage from '../../components/error-message'
+import ErrorMessage from './error-message'
 
 export default function PasswordReset() {
   const router = useRouter()
@@ -59,7 +58,10 @@ export default function PasswordReset() {
   return (
     <form onSubmit={onSubmit} className='flex flex-col'>
       <div className='my-2 w-full'>
-        <label htmlFor='name' className='text-2xs uppercase dark:text-gray-400'>
+        <label
+          htmlFor='name'
+          className='text-3xs font-semibold uppercase dark:text-gray-400'
+        >
           New Password
         </label>
         <input
@@ -81,7 +83,7 @@ export default function PasswordReset() {
       <div className='my-2 w-full'>
         <label
           htmlFor='password'
-          className='text-2xs uppercase dark:text-gray-400'
+          className='text-3xs font-semibold uppercase dark:text-gray-400'
         >
           Confirm New Password
         </label>
@@ -121,7 +123,3 @@ export default function PasswordReset() {
     </form>
   )
 }
-
-PasswordReset.layout = page => (
-  <Fullscreen closeHref='/settings'>{page}</Fullscreen>
-)
