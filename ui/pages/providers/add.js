@@ -159,71 +159,69 @@ export default function ProvidersAddDetails() {
           <ViewGridIcon className='h-6 w-6 dark:text-white' />
           <h1 className='text-sm'>Connect an Identity Provider</h1>
         </div>
-        <form onSubmit={onSubmit} className='mt-3 space-y-6'>
-          <div className='bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6'>
-            <div className='md:grid md:grid-cols-3 md:gap-6'>
-              <div className='md:col-span-1'>
-                <h3 className='text-sm font-bold leading-6 text-gray-900'>
+
+        <form className='space-y-8 divide-y divide-gray-200'>
+          <div className='space-y-8 divide-y divide-gray-200'>
+            <div>
+              <div>
+                <h3 className='text-sm font-medium leading-6 text-gray-900'>
                   Provider
                 </h3>
                 <p className='mt-1 text-xs text-gray-500'>
                   Name and select the type of your provider
                 </p>
               </div>
-              <div className='mt-5 space-y-6 md:col-span-2 md:mt-0'>
-                <div className='grid grid-cols-3 gap-6'>
-                  <div className='col-span-3 space-y-6 xl:col-span-2'>
-                    <div>
-                      <div className='pb-3'>
-                        <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                          Provider Kind
-                        </label>
-                      </div>
-                      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                        {providers.map(
-                          p =>
-                            p.available && (
-                              <div
-                                key={p.name}
-                                onClick={() => {
-                                  setKind(p.kind)
-                                }}
-                              >
-                                <Provider {...p} selected={p.kind === kind} />
-                              </div>
-                            )
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                        Name your provider
-                      </label>
-                      <input
-                        required
-                        type='search'
-                        placeholder='choose a name for your identity provider'
-                        value={name}
-                        onChange={e => {
-                          setName(e.target.value)
-                          setErrors({})
-                          setError('')
-                        }}
-                        className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                          errors.name ? 'border-pink-500' : ''
-                        }`}
-                      />
-                      {errors.name && <ErrorMessage message={errors.name} />}
-                    </div>
+
+              <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
+                <div className='sm:col-span-6'>
+                  <div className='pb-3'>
+                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                      Provider Kind
+                    </label>
                   </div>
+                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                    {providers.map(
+                      p =>
+                        p.available && (
+                          <div
+                            key={p.name}
+                            onClick={() => {
+                              setKind(p.kind)
+                            }}
+                          >
+                            <Provider {...p} selected={p.kind === kind} />
+                          </div>
+                        )
+                    )}
+                  </div>
+                </div>
+
+                <div className='sm:col-span-6'>
+                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    Name of Provider
+                  </label>
+                  <input
+                    required
+                    type='search'
+                    placeholder='choose a name for your identity provider'
+                    value={name}
+                    onChange={e => {
+                      setName(e.target.value)
+                      setErrors({})
+                      setError('')
+                    }}
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      errors.name ? 'border-pink-500' : ''
+                    }`}
+                  />
+                  {errors.name && <ErrorMessage message={errors.name} />}
                 </div>
               </div>
             </div>
-          </div>
-          <div className='bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6'>
-            <div className='md:grid md:grid-cols-3 md:gap-6'>
-              <div className='md:col-span-1'>
-                <h3 className='text-sm font-bold leading-6 text-gray-900'>
+
+            <div className='pt-8'>
+              <div>
+                <h3 className='text-sm font-medium leading-6 text-gray-900'>
                   Additional Information
                 </h3>
                 <div className='mt-1 flex flex-row items-center space-x-1 text-xs text-gray-400'>
@@ -238,85 +236,82 @@ export default function ProvidersAddDetails() {
                   </a>
                 </div>
               </div>
-              <div className='mt-5 space-y-6 md:col-span-2 md:mt-0'>
-                <div className='grid grid-cols-3 gap-6'>
-                  <div className='col-span-3 space-y-6 sm:col-span-2'>
-                    {kind !== 'google' && (
-                      <div>
-                        <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                          URL (Domain)
-                        </label>
-                        <input
-                          required
-                          autoFocus
-                          placeholder='domain or URL'
-                          value={url}
-                          onChange={e => {
-                            setURL(e.target.value)
-                            setErrors({})
-                            setError('')
-                          }}
-                          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                            errors.url ? 'border-pink-500' : ''
-                          }`}
-                        />
-                        {errors.url && <ErrorMessage message={errors.url} />}
-                      </div>
-                    )}
-                    <div>
-                      <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                        Client ID
-                      </label>
-                      <input
-                        required
-                        placeholder='client ID'
-                        type='search'
-                        value={clientID}
-                        onChange={e => {
-                          setClientID(e.target.value)
-                          setErrors({})
-                          setError('')
-                        }}
-                        className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                          errors.clientid ? 'border-pink-500' : ''
-                        }`}
-                      />
-                      {errors.clientid && (
-                        <ErrorMessage message={errors.clientid} />
-                      )}
-                    </div>
-                    <div>
-                      <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                        Client Secret
-                      </label>
-                      <input
-                        required
-                        type='password'
-                        placeholder='client secret'
-                        value={clientSecret}
-                        onChange={e => {
-                          setClientSecret(e.target.value)
-                          setErrors({})
-                          setError('')
-                        }}
-                        className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                          errors.clientsecret ? 'border-pink-500' : ''
-                        }`}
-                      />
-                      {errors.clientsecret && (
-                        <ErrorMessage message={errors.clientsecret} />
-                      )}
-                    </div>
+              <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
+                {kind !== 'google' && (
+                  <div className='sm:col-span-6'>
+                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                      URL (Domain)
+                    </label>
+                    <input
+                      required
+                      autoFocus
+                      placeholder='domain or URL'
+                      value={url}
+                      onChange={e => {
+                        setURL(e.target.value)
+                        setErrors({})
+                        setError('')
+                      }}
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                        errors.url ? 'border-pink-500' : ''
+                      }`}
+                    />
+                    {errors.url && <ErrorMessage message={errors.url} />}
                   </div>
+                )}
+
+                <div className='sm:col-span-6'>
+                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    Client ID
+                  </label>
+                  <input
+                    required
+                    placeholder='client ID'
+                    type='search'
+                    value={clientID}
+                    onChange={e => {
+                      setClientID(e.target.value)
+                      setErrors({})
+                      setError('')
+                    }}
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      errors.clientid ? 'border-pink-500' : ''
+                    }`}
+                  />
+                  {errors.clientid && (
+                    <ErrorMessage message={errors.clientid} />
+                  )}
+                </div>
+
+                <div className='sm:col-span-6'>
+                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    Client Secret
+                  </label>
+                  <input
+                    required
+                    type='password'
+                    placeholder='client secret'
+                    value={clientSecret}
+                    onChange={e => {
+                      setClientSecret(e.target.value)
+                      setErrors({})
+                      setError('')
+                    }}
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      errors.clientsecret ? 'border-pink-500' : ''
+                    }`}
+                  />
+                  {errors.clientsecret && (
+                    <ErrorMessage message={errors.clientsecret} />
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-          {kind === 'google' && (
-            <div className='bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6'>
-              <div className='md:grid md:grid-cols-3 md:gap-6'>
-                <div className='md:col-span-1'>
-                  <h3 className='text-sm font-bold leading-6 text-gray-900'>
+
+            {kind === 'google' && (
+              <div className='pt-8'>
+                <div>
+                  <h3 className='text-sm font-medium leading-6 text-gray-900'>
                     Optional Information for Google Groups
                   </h3>
                   <div className='mt-1 flex flex-row items-center space-x-1 text-xs text-gray-400'>
@@ -331,68 +326,68 @@ export default function ProvidersAddDetails() {
                     </a>
                   </div>
                 </div>
-                <div className='mt-5 space-y-6 md:col-span-2 md:mt-0'>
-                  <div className='grid grid-cols-3 gap-6'>
-                    <div className='col-span-3 space-y-6 sm:col-span-2'>
-                      <div>
-                        <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                          Private Key
-                        </label>
-                        <input
-                          type='file'
-                          onChange={parseGoogleCredentialFile}
-                          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                            errors.privatekey ? 'border-pink-500' : ''
-                          }`}
-                        />
-                        {errors.privatekey && (
-                          <ErrorMessage message={errors.privatekey} />
-                        )}
-                      </div>
-                      <div>
-                        <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-                          Workspace Domain Admin
-                        </label>
-                        <input
-                          placeholder='domain admin email'
-                          spellCheck='false'
-                          type='email'
-                          value={domainAdminEmail}
-                          onChange={e => {
-                            setDomainAdminEmail(e.target.value)
-                            setErrors({})
-                            setError('')
-                          }}
-                          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
-                            errors.domainadminemail ? 'border-pink-500' : ''
-                          }`}
-                        />
-                        {errors.domainadminemail && (
-                          <ErrorMessage message={errors.domainadminemail} />
-                        )}
-                      </div>
-                    </div>
+                <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
+                  <div className='sm:col-span-6'>
+                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                      Private Key
+                    </label>
+                    <input
+                      type='file'
+                      onChange={parseGoogleCredentialFile}
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                        errors.privatekey ? 'border-pink-500' : ''
+                      }`}
+                    />
+                    {errors.privatekey && (
+                      <ErrorMessage message={errors.privatekey} />
+                    )}
+                  </div>
+
+                  <div className='sm:col-span-6'>
+                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                      Workspace Domain Admin
+                    </label>
+                    <input
+                      placeholder='domain admin email'
+                      spellCheck='false'
+                      type='email'
+                      value={domainAdminEmail}
+                      onChange={e => {
+                        setDomainAdminEmail(e.target.value)
+                        setErrors({})
+                        setError('')
+                      }}
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                        errors.domainadminemail ? 'border-pink-500' : ''
+                      }`}
+                    />
+                    {errors.domainadminemail && (
+                      <ErrorMessage message={errors.domainadminemail} />
+                    )}
                   </div>
                 </div>
               </div>
+            )}
+          </div>
+          {error && <ErrorMessage message={error} center />}
+
+          <div className='pt-5 pb-3'>
+            <div className='flex items-center justify-end'>
+              <Link href='/providers'>
+                <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
+                  Cancel
+                </a>
+              </Link>
+              <button
+                type='submit'
+                disabled={!name || !url || !clientID || !clientSecret}
+                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800 dark:disabled:bg-gray-800'
+              >
+                Connect Provider
+              </button>
             </div>
-          )}
-          <div className='flex items-center justify-start'>
-            <Link href='/providers'>
-              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
-                Cancel
-              </a>
-            </Link>
-            <button
-              type='submit'
-              disabled={!name || !url || !clientID || !clientSecret}
-              className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800 dark:disabled:bg-gray-800'
-            >
-              Connect Provider
-            </button>
           </div>
         </form>
-        {error && <ErrorMessage message={error} center />}
       </div>
     </>
   )

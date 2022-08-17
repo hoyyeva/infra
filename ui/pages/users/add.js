@@ -18,7 +18,7 @@ function AddUser({ email, onChange, onKeyDown, onSubmit, error }) {
       </div>
       <div className='mt-6 flex flex-col space-y-1'>
         <div className='mt-4'>
-          <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
+          <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
             User Email
           </label>
           <input
@@ -36,7 +36,7 @@ function AddUser({ email, onChange, onKeyDown, onSubmit, error }) {
         </div>
         {error && <ErrorMessage message={error} />}
       </div>
-      <div className='mt-6 flex flex-row items-center justify-start'>
+      <div className='mt-6 flex flex-row items-center justify-end'>
         <Link href='/users'>
           <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
             Cancel
@@ -63,7 +63,6 @@ function UserOneTimePassword({ isEmailConfigured, password, onSubmit }) {
           <h1 className='text-sm'>Add User</h1>
         </div>
       </div>
-<<<<<<< HEAD
       {isEmailConfigured ? (
         <h2 className='mt-5 text-2xs'>
           User added. The user has been emailed a link inviting them to join.
@@ -86,24 +85,8 @@ function UserOneTimePassword({ isEmailConfigured, password, onSubmit }) {
           </div>
         </div>
       )}
-      <div className='mt-6 flex flex-row items-center justify-end'>
-=======
-      <h2 className='mt-5 text-xs'>
-        User added. Send the user this temporary password for their initial
-        login. This password will not be shown again.
-      </h2>
-      <div className='mt-6 flex flex-col space-y-1'>
-        <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
-          Temporary Password
-        </label>
-        <input
-          readOnly
-          value={password}
-          className='my-0 w-full bg-gray-100 px-4 py-3 font-mono text-2xs focus:outline-none dark:bg-gray-900'
-        />
-      </div>
+
       <div className='mt-6 flex flex-row items-center justify-start'>
->>>>>>> 780e0cb3 (feat: provider wip)
         <button
           onClick={onSubmit}
           className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'

@@ -109,9 +109,7 @@ export default function Settings() {
 
   const [tabs, setTabs] = useState([])
   const [current, setCurrent] = useState(tab === undefined ? null : tab)
-  const [showNotification, setshowNotification] = useState(
-    resetPassword && resetPassword === 'success'
-  )
+  const [showNotification, setshowNotification] = useState(false)
 
   const { data: { items: users } = {} } = useSWR('/api/users?limit=1000')
   const { data: { items: groups } = {} } = useSWR('/api/groups?limit=1000')
@@ -141,6 +139,12 @@ export default function Settings() {
       router.replace(`/settings?tab=${currentTabs[0]}`)
     }
   }, [admin, auth, hasInfraProvider, current, router])
+
+  useEffect(() => {
+    if (resetPassword && resetPassword === 'success') {
+      setshowNotification(true)
+    }
+  }, [resetPassword])
 
   return (
     <div>
@@ -187,14 +191,15 @@ export default function Settings() {
               </div>
             </div>
 
-            <Notification
-              show={showNotification}
-              text='Password Successfully Reset'
-              onClose={() => {
-                setshowNotification(false)
-                router.replace('/settings?tab=account')
-              }}
-            />
+            {showNotification && (
+              <Notification
+                text='Password Successfully Reset'
+                onClose={() => {
+                  setshowNotification(false)
+                  router.replace('/settings?tab=account')
+                }}
+              />
+            )}
           </div>
         )}
         {current === 'admin' && (

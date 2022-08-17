@@ -186,7 +186,7 @@ export default function DestinationsAdd() {
             {currentStep === 0 && (
               <form onSubmit={onSubmit} className='flex flex-col'>
                 <div className='flex flex-col space-y-1'>
-                  <label className='text-3xs font-semibold uppercase dark:text-gray-400'>
+                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                     Name the Cluster
                   </label>
                   <input
@@ -217,7 +217,7 @@ export default function DestinationsAdd() {
             )}
             {currentStep === 1 && (
               <section className='flex flex-col'>
-                <label className='mb-2 text-3xs font-semibold uppercase dark:text-gray-400'>
+                <label className='mb-2 text-2xs font-medium text-gray-700 dark:text-gray-400'>
                   Run the command on your Kubernetes cluster
                 </label>
                 <pre className='min-h-[120px] overflow-auto bg-gray-900 p-4 text-2xs text-gray-300'>
@@ -272,7 +272,7 @@ export default function DestinationsAdd() {
             )}
             {currentStep === 2 && (
               <section>
-                <label className='mb-2 text-3xs font-semibold uppercase dark:text-gray-400'>
+                <label className='mb-2 text-2xs font-medium text-gray-700 dark:text-gray-400'>
                   Connecting to your Kubernetes cluster
                 </label>
                 <p className='mt-1 text-xs text-gray-500'>
