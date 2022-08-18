@@ -347,7 +347,8 @@ export default function Groups() {
                     columns={columns}
                     data={groups || []}
                     getRowProps={row => ({
-                      onClick: () => setSelected(row.original),
+                      onClick: () =>
+                        router.replace(`/groups/${row.original.id}`),
                       className:
                         selected?.id === row.original.id
                           ? 'bg-gray-900/50'

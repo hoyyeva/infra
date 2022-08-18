@@ -1,75 +1,28 @@
-import Head from 'next/head'
+import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { useTable } from 'react-table'
 import useSWR from 'swr'
-import dayjs from 'dayjs'
-
+import DeleteModal from '../../components/delete-modal'
+import EmptyData from '../../components/empty-data'
+import Dashboard from '../../components/layouts/dashboard'
+import Metadata from '../../components/metadata'
+import RemoveButton from '../../components/remove-button'
+import RoleSelect from '../../components/role-select'
 import { useAdmin } from '../../lib/admin'
 import { sortByResource } from '../../lib/grants'
 
-import EmptyTable from '../../components/empty-table'
-import Table from '../../components/table'
-import Dashboard from '../../components/layouts/dashboard'
-import Sidebar from '../../components/sidebar'
-import EmptyData from '../../components/empty-data'
-import Metadata from '../../components/metadata'
-import RoleSelect from '../../components/role-select'
-import RemoveButton from '../../components/remove-button'
-import Pagination from '../../components/pagination'
-import DeleteModal from '../../components/delete-modal'
-import { UsersIcon } from '@heroicons/react/outline'
-import PageHeader from '../../components/page-header'
+export default function UserDetail() {
+  const router = useRouter()
+  const userId = router.query.uid
 
-const columns = [
-  {
-    Header: 'Name',
-    width: '50%',
-    accessor: u => u,
-    Cell: ({ value: user }) => (
-      <div className='flex items-center py-1.5'>
-        <div className='flex h-7 w-7 select-none items-center justify-center rounded-md border border-gray-800'>
-          <span className='text-3xs font-normal leading-none text-gray-400'>
-            {user.name[0]}
-          </span>
-        </div>
-        <div className='ml-3 flex min-w-0 flex-1 flex-col leading-tight'>
-          <div className='truncate'>{user.name}</div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    Header: 'Last Seen',
-    width: '25%',
-    accessor: u => u,
-    Cell: ({ value: user }) => (
-      <div className='text-name text-gray-400'>
-        {user.lastSeenAt ? dayjs(user.lastSeenAt).fromNow() : '-'}
-      </div>
-    ),
-  },
-  {
-    Header: 'Added',
-    width: '25%',
-    accessor: u => u,
-    Cell: ({ value: user }) => (
-      <div className='text-name text-gray-400'>
-        {user?.created ? dayjs(user.created).fromNow() : '-'}
-      </div>
-    ),
-  },
-]
-
-function Details({ user, admin, onDelete }) {
-  const { id, name } = user
+  const { data: user } = useSWR(`/api/users/${userId}`)
   const { data: auth } = useSWR('/api/users/self')
 
   const { data: { items } = {}, mutate } = useSWR(
-    `/api/grants?user=${id}&showInherited=1&limit=1000`
+    `/api/grants?user=${user?.id}&showInherited=1&limit=1000`
   )
   const { data: { items: groups } = {}, mutate: mutateGroups } = useSWR(
-    `/api/groups?userID=${id}&limit=1000`
+    `/api/groups?userID=${user?.id}&limit=1000`
   )
 
   const { data: { items: infraAdmins } = {} } = useSWR(
@@ -77,6 +30,7 @@ function Details({ user, admin, onDelete }) {
   )
 
   const [open, setOpen] = useState(false)
+  const { admin, loading: adminLoading } = useAdmin()
 
   const grants = items?.filter(g => g.resource !== 'infra')
   const adminGroups = infraAdmins?.map(admin => admin.group)
@@ -89,10 +43,10 @@ function Details({ user, admin, onDelete }) {
     { title: 'Providers', data: user?.providerNames.join(', ') },
   ]
 
-  const loading = [auth, grants, groups].some(x => !x)
+  const loading = [!adminLoading, auth, grants, groups].some(x => !x)
 
   const handleRemoveGroupFromUser = async groupId => {
-    const usersToRemove = [id]
+    const usersToRemove = [user.id]
     await fetch(`/api/groups/${groupId}/users`, {
       method: 'PATCH',
       body: JSON.stringify({ usersToRemove }),
@@ -205,7 +159,8 @@ function Details({ user, admin, onDelete }) {
                       <div className='flex justify-end text-right opacity-0 group-hover:opacity-100'>
                         <button
                           onClick={() =>
-                            auth?.id === id && adminGroups?.includes(group.id)
+                            auth?.id === user?.id &&
+                            adminGroups?.includes(group.id)
                               ? setOpen(true)
                               : handleRemoveGroupFromUser(group.id)
                           }
@@ -236,16 +191,20 @@ function Details({ user, admin, onDelete }) {
           <Metadata data={metadata} />
         </section>
         <section className='flex flex-1 flex-col items-end justify-end py-6'>
-          {auth.id !== id && (
+          {auth.id !== user?.id && (
             <RemoveButton
               onRemove={async () => {
-                onDelete()
+                await fetch(`/api/users/${userId}`, {
+                  method: 'DELETE',
+                })
+
+                router.replace('/users')
               }}
               modalTitle='Remove User'
               modalMessage={
                 <>
                   Are you sure you want to remove{' '}
-                  <span className='font-bold text-white'>{name}?</span>
+                  <span className='font-bold text-white'>{user?.name}?</span>
                 </>
               }
             />
@@ -256,111 +215,6 @@ function Details({ user, admin, onDelete }) {
   )
 }
 
-export default function Users() {
-  const router = useRouter()
-  const page = router.query.p === undefined ? 1 : router.query.p
-  const limit = 13
-  const {
-    data: { items, totalPages, totalCount } = {},
-    error,
-    mutate,
-  } = useSWR(`/api/users?page=${page}&limit=${limit}`)
-  const { admin, loading: adminLoading } = useAdmin()
-  const users = items
-  const table = useTable({
-    columns,
-    data: users || [],
-  })
-  const [selected, setSelected] = useState(null)
-
-  const loading = adminLoading || (!users && !error)
-
-  return (
-    <>
-      <Head>
-        <title>Users - Infra</title>
-      </Head>
-      <div className='pb-6'>
-        <PageHeader
-          header='Users'
-          buttonHref={admin && '/users/add'}
-          buttonLabel='User'
-        />
-      </div>
-      <div className='px-4 sm:px-6 md:px-0'>
-        {!loading && (
-          <div className='flex h-full flex-1'>
-            <div className='flex flex-1 flex-col space-y-4'>
-              {error?.status ? (
-                <div className='my-20 text-center text-sm font-light text-gray-300'>
-                  {error?.info?.message}
-                </div>
-              ) : (
-                <div className='flex min-h-0 flex-1 flex-col overflow-y-auto px-0 md:px-6 xl:px-0'>
-                  <Table
-                    {...table}
-                    getRowProps={row => ({
-                      onClick: () =>
-                        router.replace(`/users/${row.original.id}`),
-                      className:
-                        selected?.id === row.original.id
-                          ? 'bg-gray-900/50'
-                          : 'cursor-pointer',
-                    })}
-                  />
-                  {users?.length === 0 && page === 1 && (
-                    <EmptyTable
-                      title='There are no users'
-                      subtitle='Invite users to Infra and manage their access.'
-                      iconPath='/users.svg'
-                      buttonHref={admin && '/users/add'}
-                      icon={<UsersIcon className='dark:text-white' />}
-                      buttonText='Users'
-                    />
-                  )}
-                </div>
-              )}
-              {totalPages > 1 && (
-                <Pagination
-                  curr={page}
-                  totalPages={totalPages}
-                  totalCount={totalCount}
-                  limit={limit}
-                ></Pagination>
-              )}
-            </div>
-            {selected && (
-              <Sidebar
-                onClose={() => setSelected(null)}
-                title={selected.name}
-                iconText={selected.name[0]}
-              >
-                <Details
-                  user={selected}
-                  admin={admin}
-                  onDelete={() => {
-                    mutate(async ({ items: users } = { items: [] }) => {
-                      await fetch(`/api/users/${selected.id}`, {
-                        method: 'DELETE',
-                      })
-
-                      return {
-                        items: users?.filter(u => u?.id !== selected.id),
-                      }
-                    })
-
-                    setSelected(null)
-                  }}
-                />
-              </Sidebar>
-            )}
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
-
-Users.layout = function (page) {
+UserDetail.layout = page => {
   return <Dashboard>{page}</Dashboard>
 }

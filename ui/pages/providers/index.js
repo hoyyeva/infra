@@ -132,7 +132,9 @@ export default function Providers() {
                   <Table
                     {...table}
                     getRowProps={row => ({
-                      onClick: () => setSelected(row.original),
+                      // onClick: () => setSelected(row.original),
+                      onClick: () =>
+                        router.replace(`/providers/${row.original.id}`),
                       className:
                         selected?.id === row.original.id
                           ? 'bg-gray-900/50'

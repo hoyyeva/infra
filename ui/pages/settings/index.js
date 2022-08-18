@@ -18,6 +18,22 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
   const [open, setOpen] = useState(false)
   const [deleteId, setDeleteId] = useState(null)
 
+  const grantsList = grants?.sort(sortBySubject)?.map(grant => {
+    const message =
+      grant?.user === auth?.id
+        ? 'Are you sure you want to revoke your own admin access?'
+        : selfGroups?.some(g => g.id === grant.group)
+        ? `Are you sure you want to revoke this group's admin access? You are a member of this group.`
+        : undefined
+
+    const name =
+      users?.find(u => grant.user === u.id)?.name ||
+      groups?.find(group => grant.group === group.id)?.name ||
+      ''
+
+    return { ...grant, message, name }
+  })
+
   return (
     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
       <div className='inline-block min-w-full py-2 px-4 align-middle md:px-6 lg:px-8'>
@@ -34,66 +50,49 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
               </tr>
             </thead>
             <tbody className='bg-white'>
-              {grants
-                ?.sort(sortBySubject)
-                ?.map(grant => {
-                  const message =
-                    grant?.user === auth?.id
-                      ? 'Are you sure you want to revoke your own admin access?'
-                      : selfGroups?.some(g => g.id === grant.group)
-                      ? `Are you sure you want to revoke this group's admin access? You are a member of this group.`
-                      : undefined
-
-                  const name =
-                    users?.find(u => grant.user === u.id)?.name ||
-                    groups?.find(group => grant.group === group.id)?.name ||
-                    ''
-
-                  return { ...grant, message, name }
-                })
-                ?.map(grant => (
-                  <tr key={grant.id}>
-                    <td className='whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6'>
-                      <div>{grant.name}</div>
-                      <div>
-                        <button
-                          onClick={() => {
-                            setDeleteId(grant.id)
-                            setOpen(true)
-                          }}
-                          className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
-                        >
-                          Revoke
-                        </button>
-                      </div>
-                    </td>
-                    <DeleteModal
-                      open={open}
-                      setOpen={setOpen}
-                      primaryButtonText='Revoke'
-                      onSubmit={() => {
-                        onRemove(deleteId)
-                        setOpen(false)
-                      }}
-                      title='Revoke Admin'
-                      message={
-                        !grant.message ? (
-                          <>
-                            Are you sure you want to revoke admin access for{' '}
-                            <span className='font-bold text-white'>
-                              {grant.name}
-                            </span>
-                            ?
-                          </>
-                        ) : (
-                          grant.message
-                        )
-                      }
-                    />
-                  </tr>
-                ))}
+              {grantsList?.map(grant => (
+                <tr key={grant.id}>
+                  <td className='whitespace-nowrap py-4 pl-4 pr-3 text-xs font-medium sm:pl-6'>
+                    <div>{grant.name}</div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setDeleteId(grant.id)
+                          setOpen(true)
+                        }}
+                        className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
+                      >
+                        Revoke
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          <DeleteModal
+            open={open}
+            setOpen={setOpen}
+            primaryButtonText='Revoke'
+            onSubmit={() => {
+              onRemove(deleteId)
+              setOpen(false)
+            }}
+            title='Revoke Admin'
+            message={
+              !grantsList?.find(grant => grant.id === deleteId)?.message ? (
+                <>
+                  Are you sure you want to revoke admin access for{' '}
+                  <span className='font-bold text-white'>
+                    {grantsList?.find(grant => grant.id === deleteId)?.name}
+                  </span>
+                  ?
+                </>
+              ) : (
+                grantsList?.find(grant => grant.id === deleteId)?.message
+              )
+            }
+          />
         </div>
       </div>
     </div>
