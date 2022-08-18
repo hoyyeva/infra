@@ -183,7 +183,7 @@ export default function Settings() {
               <div className='flex flex-row items-center space-x-2'>
                 <KeyIcon className='h-6 w-6 dark:text-white' />
                 <div>
-                  <h1 className='text-sm'>Reset Password</h1>
+                  <h1 className='text-base'>Reset Password</h1>
                 </div>
               </div>
               <div className='flex flex-col space-y-2 pt-6'>
@@ -208,7 +208,7 @@ export default function Settings() {
               <div className='flex flex-row items-center space-x-2'>
                 <CogIcon className='h-6 w-6 dark:text-white' />
                 <div>
-                  <h1 className='text-sm'>Admin</h1>
+                  <h1 className='text-base'>Admin</h1>
                 </div>
               </div>
               <GrantForm

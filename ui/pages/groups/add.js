@@ -136,7 +136,7 @@ export default function GroupsAdd() {
           <div className='flex flex-row items-center space-x-2'>
             <UserGroupIcon className='h-6 w-6 dark:text-white' />
             <div>
-              <h1 className='text-sm'>Create Group</h1>
+              <h1 className='text-base'>Create Group</h1>
             </div>
           </div>
           <div className='mt-6 flex flex-col space-y-1'>
@@ -186,7 +186,6 @@ export default function GroupsAdd() {
   )
 }
 
-// GroupsAdd.layout = page => <Fullscreen closeHref='/groups'>{page}</Fullscreen>
 GroupsAdd.layout = page => {
   return <Dashboard>{page}</Dashboard>
 }

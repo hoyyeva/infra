@@ -138,9 +138,31 @@ function Layout({ children }) {
   const { mutate } = useSWRConfig()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [asPathList, setAsPathList] = useState(asPath.split('/'))
+  const [asPathList, setAsPathList] = useState([
+    ...new Set(
+      asPath
+        .split('/')
+        .filter(n => n)
+        .map(name => {
+          return name.split('?')[0]
+        })
+    ),
+  ])
 
-  useEffect(() => setAsPathList(asPath.split('/')), [asPath])
+  useEffect(
+    () =>
+      setAsPathList([
+        ...new Set(
+          asPath
+            .split('/')
+            .filter(n => n)
+            .map(name => {
+              return name.split('?')[0]
+            })
+        ),
+      ]),
+    [asPath]
+  )
 
   const accessToSettingsPage = admin || auth?.providerNames?.includes('infra')
 
@@ -275,9 +297,26 @@ function Layout({ children }) {
                 {!router.pathname.startsWith('/settings') &&
                   asPathList?.map((item, index, arr) => {
                     const href = arr.slice(0, index + 1).join('/')
+                    const currentPath = [
+                      ...new Set(
+                        asPath
+                          .split('/')
+                          .filter(n => n)
+                          .map(name => {
+                            return name.split('?')[0]
+                          })
+                      ),
+                    ].join('/')
+
+                    const current = currentPath === href
+
                     return (
-                      <Link key={item} href={href}>
-                        <a className='text-sm text-gray-400 hover:text-gray-500'>
+                      <Link key={item} href={`/${href}`}>
+                        <a
+                          className={`text-sm capitalize hover:text-gray-500 ${
+                            current ? 'text-gray-900' : 'text-gray-400'
+                          }`}
+                        >
                           {item}{' '}
                           {index !== arr.length - 1 && (
                             <span className='mx-2'> / </span>

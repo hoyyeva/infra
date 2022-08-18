@@ -13,7 +13,7 @@ function AddUser({ email, onChange, onKeyDown, onSubmit, error }) {
       <div className='flex flex-row items-center space-x-2'>
         <UserIcon className='h-5 w-5 dark:text-white' />
         <div>
-          <h1 className='text-sm'>Add User</h1>
+          <h1 className='text-base'>Add User</h1>
         </div>
       </div>
       <div className='mt-6 flex flex-col space-y-1'>
@@ -60,7 +60,7 @@ function UserOneTimePassword({ isEmailConfigured, password, onSubmit }) {
       <div className='flex flex-row items-center space-x-2'>
         <UserIcon className='h-5 w-5 dark:text-white' />
         <div>
-          <h1 className='text-sm'>Add User</h1>
+          <h1 className='text-base'>Add User</h1>
         </div>
       </div>
       {isEmailConfigured ? (
@@ -203,7 +203,6 @@ export default function UsersAdd() {
   )
 }
 
-// UsersAdd.layout = page => <Fullscreen closeHref='/users'>{page}</Fullscreen>
 UsersAdd.layout = page => {
   return <Dashboard>{page}</Dashboard>
 }

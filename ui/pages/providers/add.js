@@ -33,9 +33,13 @@ function Provider({ kind, name, selected }) {
 export default function ProvidersAddDetails() {
   const router = useRouter()
 
+  const { type } = router.query
+
   const { mutate } = useSWRConfig()
 
-  const [kind, setKind] = useState(providers[0].kind)
+  const [kind, setKind] = useState(
+    type === undefined ? providers[0].kind : type
+  )
   const [url, setURL] = useState(kind === 'google' ? 'accounts.google.com' : '')
   const [clientID, setClientID] = useState('')
   const [clientSecret, setClientSecret] = useState('')
@@ -154,26 +158,29 @@ export default function ProvidersAddDetails() {
       <Head>
         <title>Add Identity Provider - {kind}</title>
       </Head>
-      <div className='flex flex-col space-y-4 px-4 py-5 md:px-6 xl:px-0'>
+      <div className='flex flex-col space-y-4 px-4 py-5 md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
         <div className='flex flex-row items-center space-x-2 pb-5'>
           <ViewGridIcon className='h-6 w-6 dark:text-white' />
-          <h1 className='text-sm'>Connect an Identity Provider</h1>
+          <h1 className='text-base'>Connect an Identity Provider</h1>
         </div>
 
-        <form className='space-y-8 divide-y divide-gray-200'>
-          <div className='space-y-8 divide-y divide-gray-200'>
-            <div>
-              <div>
-                <h3 className='text-sm font-medium leading-6 text-gray-900'>
+        <form
+          onSubmit={onSubmit}
+          className='space-y-8 divide-y divide-gray-200'
+        >
+          <div className='space-y-8'>
+            <div className='max-w-4xl space-y-1'>
+              <div className='pb-2'>
+                <h3 className='text-base font-medium leading-6 text-gray-900'>
                   Provider
                 </h3>
-                <p className='mt-1 text-xs text-gray-500'>
+                <p className='mt-1 text-sm text-gray-500'>
                   Name and select the type of your provider
                 </p>
               </div>
 
               <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
-                <div className='sm:col-span-6'>
+                <div className='sm:col-span-6 lg:col-span-5'>
                   <div className='pb-3'>
                     <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                       Provider Kind
@@ -187,6 +194,7 @@ export default function ProvidersAddDetails() {
                             key={p.name}
                             onClick={() => {
                               setKind(p.kind)
+                              router.replace(`/providers/add?type=${p.kind}`)
                             }}
                           >
                             <Provider {...p} selected={p.kind === kind} />
@@ -196,7 +204,7 @@ export default function ProvidersAddDetails() {
                   </div>
                 </div>
 
-                <div className='sm:col-span-6'>
+                <div className='sm:col-span-6 lg:col-span-5'>
                   <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                     Name of Provider
                   </label>
@@ -219,12 +227,12 @@ export default function ProvidersAddDetails() {
               </div>
             </div>
 
-            <div className='pt-8'>
-              <div>
-                <h3 className='text-sm font-medium leading-6 text-gray-900'>
+            <div className='max-w-4xl space-y-1 pt-8'>
+              <div className='pb-2'>
+                <h3 className='text-base font-medium leading-6 text-gray-900'>
                   Additional Information
                 </h3>
-                <div className='mt-1 flex flex-row items-center space-x-1 text-xs text-gray-400'>
+                <div className='mt-1 flex flex-row items-center space-x-1 text-sm text-gray-400'>
                   <InformationCircleIcon className='h-4 w-4 dark:text-white' />
                   <a
                     className='underline hover:text-gray-500'
@@ -238,7 +246,7 @@ export default function ProvidersAddDetails() {
               </div>
               <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
                 {kind !== 'google' && (
-                  <div className='sm:col-span-6'>
+                  <div className='sm:col-span-6 lg:col-span-5'>
                     <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                       URL (Domain)
                     </label>
@@ -260,7 +268,7 @@ export default function ProvidersAddDetails() {
                   </div>
                 )}
 
-                <div className='sm:col-span-6'>
+                <div className='sm:col-span-6 lg:col-span-5'>
                   <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                     Client ID
                   </label>
@@ -283,7 +291,7 @@ export default function ProvidersAddDetails() {
                   )}
                 </div>
 
-                <div className='sm:col-span-6'>
+                <div className='sm:col-span-6 lg:col-span-5'>
                   <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                     Client Secret
                   </label>
@@ -309,12 +317,12 @@ export default function ProvidersAddDetails() {
             </div>
 
             {kind === 'google' && (
-              <div className='pt-8'>
-                <div>
-                  <h3 className='text-sm font-medium leading-6 text-gray-900'>
+              <div className='max-w-4xl space-y-1 pt-8'>
+                <div className='pb-2'>
+                  <h3 className='text-base font-medium leading-6 text-gray-900'>
                     Optional Information for Google Groups
                   </h3>
-                  <div className='mt-1 flex flex-row items-center space-x-1 text-xs text-gray-400'>
+                  <div className='mt-1 flex flex-row items-center space-x-1 text-sm text-gray-400'>
                     <InformationCircleIcon className='h-4 w-4 dark:text-white' />
                     <a
                       className='text-gray-400 underline hover:text-gray-500'
@@ -327,7 +335,7 @@ export default function ProvidersAddDetails() {
                   </div>
                 </div>
                 <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
-                  <div className='sm:col-span-6'>
+                  <div className='sm:col-span-6 lg:col-span-5'>
                     <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                       Private Key
                     </label>
@@ -343,7 +351,7 @@ export default function ProvidersAddDetails() {
                     )}
                   </div>
 
-                  <div className='sm:col-span-6'>
+                  <div className='sm:col-span-6 lg:col-span-5'>
                     <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
                       Workspace Domain Admin
                     </label>
