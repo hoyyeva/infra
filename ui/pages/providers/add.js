@@ -40,7 +40,7 @@ export default function ProvidersAddDetails() {
   const [kind, setKind] = useState(
     type === undefined ? providers[0].kind : type
   )
-  const [url, setURL] = useState(kind === 'google' ? 'accounts.google.com' : '')
+  const [url, setURL] = useState(type === 'google' ? 'accounts.google.com' : '')
   const [clientID, setClientID] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [privateKey, setPrivateKey] = useState('')
@@ -389,7 +389,7 @@ export default function ProvidersAddDetails() {
               <button
                 type='submit'
                 disabled={!name || !url || !clientID || !clientSecret}
-                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800 dark:disabled:bg-gray-800'
+                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:cursor-pointer hover:bg-gray-200 disabled:hover:cursor-not-allowed disabled:hover:bg-gray-100 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800 dark:disabled:bg-gray-800'
               >
                 Connect Provider
               </button>

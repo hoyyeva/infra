@@ -150,104 +150,110 @@ export default function Settings() {
       <Head>
         <title>Settings - Infra</title>
       </Head>
-      <div className='pb-6'>
-        <PageHeader header='Settings' />
-        <div className=' px-4 sm:px-6 xl:px-0'>
-          <div className='border-b border-gray-200'>
-            <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
-              {tabs.map(tab => (
-                <a
-                  key={tab}
-                  onClick={() => {
-                    setCurrent(tab)
-                    router.replace(`/settings?tab=${tab}`)
-                  }}
-                  className={`${
-                    tab === current
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  } whitespace-nowrap border-b-2 py-4 px-1 text-xs font-semibold capitalize`}
-                >
-                  {tab}
-                </a>
-              ))}
-            </nav>
+      <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+        <div className='pb-6'>
+          <PageHeader header='Settings' />
+          <div className=' px-4 sm:px-6 xl:px-0'>
+            <div className='border-b border-gray-200'>
+              <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
+                {tabs.map(tab => (
+                  <a
+                    key={tab}
+                    onClick={() => {
+                      setCurrent(tab)
+                      router.replace(`/settings?tab=${tab}`)
+                    }}
+                    className={`${
+                      tab === current
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    } whitespace-nowrap border-b-2 py-4 px-1 text-xs font-semibold capitalize`}
+                  >
+                    {tab}
+                  </a>
+                ))}
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
-      <div className='px-4 sm:px-6 xl:px-0'>
-        {current === 'account' && (
-          <div className='flex flex-1 flex-col space-y-8'>
-            <div className='pt-6'>
-              <div className='flex flex-row items-center space-x-2'>
-                <KeyIcon className='h-6 w-6 dark:text-white' />
-                <div>
-                  <h1 className='text-base'>Reset Password</h1>
+        <div className='px-4 sm:px-6 xl:px-0'>
+          {current === 'account' && (
+            <div className='flex flex-1 flex-col space-y-8'>
+              <div className='pt-6'>
+                <div className='flex flex-row items-center space-x-2'>
+                  <KeyIcon className='h-6 w-6 dark:text-white' />
+                  <div>
+                    <h1 className='text-base'>Reset Password</h1>
+                  </div>
+                </div>
+                <div className='flex flex-col space-y-2 pt-6'>
+                  <PasswordReset />
                 </div>
               </div>
-              <div className='flex flex-col space-y-2 pt-6'>
-                <PasswordReset />
-              </div>
-            </div>
 
-            {showNotification && (
-              <Notification
-                text='Password Successfully Reset'
-                onClose={() => {
-                  setshowNotification(false)
-                  router.replace('/settings?tab=account')
-                }}
-              />
-            )}
-          </div>
-        )}
-        {current === 'admin' && (
-          <div className='flex flex-1 flex-col space-y-8'>
-            <div className='pt-6'>
-              <div className='flex flex-row items-center space-x-2'>
-                <CogIcon className='h-6 w-6 dark:text-white' />
-                <div>
-                  <h1 className='text-base'>Admin</h1>
-                </div>
-              </div>
-              <GrantForm
-                resource='infra'
-                roles={['admin']}
-                onSubmit={async ({ user, group }) => {
-                  // don't add grants that already exist
-                  if (grants?.find(g => g.user === user && g.group === group)) {
-                    return false
-                  }
-
-                  const res = await fetch('/api/grants', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                      user,
-                      group,
-                      privilege: 'admin',
-                      resource: 'infra',
-                    }),
-                  })
-
-                  mutate({ items: [...grants, await res.json()] })
-                }}
-              />
-              <div className='py-6'>
-                <AdminList
-                  grants={grants}
-                  users={users}
-                  groups={groups}
-                  selfGroups={selfGroups}
-                  auth={auth}
-                  onRemove={async grantId => {
-                    await fetch(`/api/grants/${grantId}`, { method: 'DELETE' })
-                    mutate({ items: grants?.filter(x => x.id !== grantId) })
+              {showNotification && (
+                <Notification
+                  text='Password Successfully Reset'
+                  onClose={() => {
+                    setshowNotification(false)
+                    router.replace('/settings?tab=account')
                   }}
                 />
+              )}
+            </div>
+          )}
+          {current === 'admin' && (
+            <div className='flex flex-1 flex-col space-y-8'>
+              <div className='pt-6'>
+                <div className='flex flex-row items-center space-x-2'>
+                  <CogIcon className='h-6 w-6 dark:text-white' />
+                  <div>
+                    <h1 className='text-base'>Admin</h1>
+                  </div>
+                </div>
+                <GrantForm
+                  resource='infra'
+                  roles={['admin']}
+                  onSubmit={async ({ user, group }) => {
+                    // don't add grants that already exist
+                    if (
+                      grants?.find(g => g.user === user && g.group === group)
+                    ) {
+                      return false
+                    }
+
+                    const res = await fetch('/api/grants', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        user,
+                        group,
+                        privilege: 'admin',
+                        resource: 'infra',
+                      }),
+                    })
+
+                    mutate({ items: [...grants, await res.json()] })
+                  }}
+                />
+                <div className='py-6'>
+                  <AdminList
+                    grants={grants}
+                    users={users}
+                    groups={groups}
+                    selfGroups={selfGroups}
+                    auth={auth}
+                    onRemove={async grantId => {
+                      await fetch(`/api/grants/${grantId}`, {
+                        method: 'DELETE',
+                      })
+                      mutate({ items: grants?.filter(x => x.id !== grantId) })
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
