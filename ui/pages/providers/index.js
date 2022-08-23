@@ -13,8 +13,6 @@ import PageHeader from '../../components/page-header'
 import DeleteModal from '../../components/delete-modal'
 
 function ProviderTable({ providers, mutate }) {
-  const router = useRouter()
-
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedProvider, setSelectedProvider] = useState(null)
 
@@ -48,11 +46,7 @@ function ProviderTable({ providers, mutate }) {
         </thead>
         <tbody className='divide-y divide-gray-200 bg-white'>
           {providers?.map(provider => (
-            <tr
-              key={provider.id}
-              onClick={() => router.replace(`/providers/${provider.id}`)}
-              className='hover:cursor-pointer hover:bg-gray-100'
-            >
+            <tr key={provider.id}>
               <td className='w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6'>
                 <div className='flex items-center py-1.5'>
                   <div className='flex h-7 w-7 flex-none items-center justify-center rounded-md border border-gray-200'>

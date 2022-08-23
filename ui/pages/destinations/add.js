@@ -136,7 +136,7 @@ export default function DestinationsAdd() {
           >
             {steps.map(step => (
               <li key={step.name} className='md:flex-1'>
-                {step.status === 'complete' ? (
+                {step?.status === 'complete' ? (
                   <div className='group flex flex-col border-l-4 border-blue-600 py-2 pl-4 hover:border-blue-800 md:border-l-0 md:border-t-4 md:pl-0 md:pt-4 md:pb-0'>
                     <span className='flex items-start'>
                       <span className='relative flex h-5 w-5 flex-shrink-0 items-center justify-center'>
@@ -150,7 +150,7 @@ export default function DestinationsAdd() {
                       </span>
                     </span>
                   </div>
-                ) : step.status === 'current' ? (
+                ) : step?.status === 'current' ? (
                   <div className='flex border-l-4 border-blue-600 py-2 pl-4 md:border-l-0 md:border-t-4 md:pl-0 md:pt-4 md:pb-0'>
                     <span
                       className='relative flex h-5 w-5 flex-shrink-0 items-center justify-center'
