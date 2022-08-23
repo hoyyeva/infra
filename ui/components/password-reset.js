@@ -40,7 +40,7 @@ export default function PasswordReset() {
         throw data
       }
 
-      router.replace('/settings?tab=account&resetPassword=success')
+      router.replace('/account?tab=account&resetPassword=success')
     } catch (e) {
       if (e.fieldErrors) {
         const errors = {}
@@ -106,7 +106,7 @@ export default function PasswordReset() {
         )}
       </div>
       <div className='mt-6 flex flex-row items-center justify-end'>
-        <Link href='/settings'>
+        <Link href='/account'>
           <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
             Cancel
           </a>

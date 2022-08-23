@@ -1,18 +1,14 @@
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
 import useSWR from 'swr'
-import { CogIcon, KeyIcon } from '@heroicons/react/outline'
+import { useState } from 'react'
+import Head from 'next/head'
+import PageHeader from '../../components/page-header'
+import { CogIcon } from '@heroicons/react/outline'
 
 import { sortBySubject } from '../../lib/grants'
-import { useAdmin } from '../../lib/admin'
 
+import GrantForm from '../../components/grant-form'
 import Dashboard from '../../components/layouts/dashboard'
 import DeleteModal from '../../components/delete-modal'
-import Notification from '../../components/notification'
-import GrantForm from '../../components/grant-form'
-import PasswordReset from '../../components/password-reset'
-import PageHeader from '../../components/page-header'
 
 function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
   const [open, setOpen] = useState(false)
@@ -101,14 +97,6 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
 
 export default function Settings() {
   const { data: auth } = useSWR('/api/users/self')
-  const { admin } = useAdmin()
-  const router = useRouter()
-
-  const { resetPassword, tab } = router.query
-
-  const [tabs, setTabs] = useState([])
-  const [current, setCurrent] = useState(tab === undefined ? null : tab)
-  const [showNotification, setshowNotification] = useState(false)
 
   const { data: { items: users } = {} } = useSWR('/api/users?limit=1000')
   const { data: { items: groups } = {} } = useSWR('/api/groups?limit=1000')
@@ -119,146 +107,66 @@ export default function Settings() {
     `/api/groups?userID=${auth?.id}&limit=1000`
   )
 
-  const hasInfraProvider = auth?.providerNames.includes('infra')
-
-  useEffect(() => {
-    const currentTabs = []
-    if (auth && hasInfraProvider) {
-      currentTabs.push('account')
-      setTabs(currentTabs)
-    }
-
-    if (admin) {
-      currentTabs.push('admin')
-      setTabs(currentTabs)
-    }
-
-    if (current === null) {
-      setCurrent(currentTabs.includes('account') ? 'account' : currentTabs[0])
-      router.replace(`/settings?tab=${currentTabs[0]}`)
-    }
-  }, [admin, auth, hasInfraProvider, current, router])
-
-  useEffect(() => {
-    if (resetPassword && resetPassword === 'success') {
-      setshowNotification(true)
-    }
-  }, [resetPassword])
-
   return (
-    <div>
+    <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
-        <title>Settings - Infra</title>
+        <title>Account - Infra</title>
       </Head>
-      <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
-        <div className='pb-6'>
-          <PageHeader header='Settings' />
-          <div className=' px-4 sm:px-6 xl:px-0'>
-            <div className='border-b border-gray-200'>
-              <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
-                {tabs.map(tab => (
-                  <a
-                    key={tab}
-                    onClick={() => {
-                      setCurrent(tab)
-                      router.replace(`/settings?tab=${tab}`)
-                    }}
-                    className={`${
-                      tab === current
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    } whitespace-nowrap border-b-2 py-4 px-1 text-xs font-semibold capitalize`}
-                  >
-                    {tab}
-                  </a>
-                ))}
-              </nav>
+      <div className='pb-6'>
+        <PageHeader header='Settings' />
+      </div>
+      <div className='px-4 sm:px-6 xl:px-0'>
+        <div className='flex flex-1 flex-col space-y-8'>
+          <div className='pt-6'>
+            <div className='flex flex-row items-center space-x-2'>
+              <CogIcon className='h-6 w-6 dark:text-white' />
+              <div>
+                <h1 className='text-base'>Infra Admin</h1>
+              </div>
+            </div>
+            <GrantForm
+              resource='infra'
+              roles={['admin']}
+              onSubmit={async ({ user, group }) => {
+                // don't add grants that already exist
+                if (grants?.find(g => g.user === user && g.group === group)) {
+                  return false
+                }
+
+                const res = await fetch('/api/grants', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    user,
+                    group,
+                    privilege: 'admin',
+                    resource: 'infra',
+                  }),
+                })
+
+                mutate({ items: [...grants, await res.json()] })
+              }}
+            />
+            <div className='py-6'>
+              <AdminList
+                grants={grants}
+                users={users}
+                groups={groups}
+                selfGroups={selfGroups}
+                auth={auth}
+                onRemove={async grantId => {
+                  await fetch(`/api/grants/${grantId}`, {
+                    method: 'DELETE',
+                  })
+                  mutate({ items: grants?.filter(x => x.id !== grantId) })
+                }}
+              />
             </div>
           </div>
-        </div>
-        <div className='px-4 sm:px-6 xl:px-0'>
-          {current === 'account' && (
-            <div className='flex flex-1 flex-col space-y-8'>
-              <div className='pt-6'>
-                <div className='flex flex-row items-center space-x-2'>
-                  <KeyIcon className='h-6 w-6 dark:text-white' />
-                  <div>
-                    <h1 className='text-base'>Reset Password</h1>
-                  </div>
-                </div>
-                <div className='flex flex-col space-y-2 pt-6'>
-                  <PasswordReset />
-                </div>
-              </div>
-
-              {showNotification && (
-                <Notification
-                  text='Password Successfully Reset'
-                  onClose={() => {
-                    setshowNotification(false)
-                    router.replace('/settings?tab=account')
-                  }}
-                />
-              )}
-            </div>
-          )}
-          {current === 'admin' && (
-            <div className='flex flex-1 flex-col space-y-8'>
-              <div className='pt-6'>
-                <div className='flex flex-row items-center space-x-2'>
-                  <CogIcon className='h-6 w-6 dark:text-white' />
-                  <div>
-                    <h1 className='text-base'>Admin</h1>
-                  </div>
-                </div>
-                <GrantForm
-                  resource='infra'
-                  roles={['admin']}
-                  onSubmit={async ({ user, group }) => {
-                    // don't add grants that already exist
-                    if (
-                      grants?.find(g => g.user === user && g.group === group)
-                    ) {
-                      return false
-                    }
-
-                    const res = await fetch('/api/grants', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        user,
-                        group,
-                        privilege: 'admin',
-                        resource: 'infra',
-                      }),
-                    })
-
-                    mutate({ items: [...grants, await res.json()] })
-                  }}
-                />
-                <div className='py-6'>
-                  <AdminList
-                    grants={grants}
-                    users={users}
-                    groups={groups}
-                    selfGroups={selfGroups}
-                    auth={auth}
-                    onRemove={async grantId => {
-                      await fetch(`/api/grants/${grantId}`, {
-                        method: 'DELETE',
-                      })
-                      mutate({ items: grants?.filter(x => x.id !== grantId) })
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
   )
 }
-
-Settings.layout = function (page) {
-  return <Dashboard header='Settings'>{page}</Dashboard>
+Settings.layout = page => {
+  return <Dashboard>{page}</Dashboard>
 }

@@ -10,6 +10,7 @@ import {
   ViewGridIcon,
   XIcon,
   MenuAlt2Icon,
+  CogIcon,
 } from '@heroicons/react/outline'
 
 import { useAdmin } from '../../lib/admin'
@@ -250,15 +251,32 @@ function Layout({ children }) {
         />
       ),
     },
+    {
+      name: 'Settings',
+      href: '/settings',
+      icon: '/providers.svg',
+      admin: true,
+      testIcon: CogIcon,
+      heroIcon: (
+        <CogIcon
+          className={`
+            ${
+              router.asPath.startsWith('/settings')
+                ? 'dark:text-white'
+                : 'dark:text-white dark:opacity-40'
+            }
+          `}
+        />
+      ),
+    },
   ]
 
   const subNavigation = [
-    { name: 'Settings', href: '/settings', admin: accessToSettingsPage },
-    { name: 'Sign out', onClick: () => logout() },
+    { name: 'Account', href: '/account', admin: accessToSettingsPage },
   ]
 
   // redirect non-admin routes if user isn't admin
-  if (router.pathname.startsWith('/settings') && !accessToSettingsPage) {
+  if (router.pathname.startsWith('/account') && !accessToSettingsPage) {
     router.replace('/')
     return null
   }
@@ -282,7 +300,7 @@ function Layout({ children }) {
       </div>
 
       <div className='md:pl-64'>
-        <div className='mx-auto flex flex-col px-0 xl:px-8'>
+        <div className='mx-auto flex flex-col px-0 md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
           <div className='sticky top-0 flex h-16 flex-shrink-0 bg-white dark:border-gray-800 dark:bg-black'>
             <button
               type='button'
@@ -294,7 +312,7 @@ function Layout({ children }) {
             </button>
             <div className='flex flex-1 justify-between px-4 md:px-6 xl:px-0'>
               <div className='m-auto flex flex-1 items-center'>
-                {!router.pathname.startsWith('/settings') &&
+                {!router.pathname.startsWith('/account') &&
                   asPathList?.map((item, index, arr) => {
                     const href = arr.slice(0, index + 1).join('/')
                     const currentPath = [
@@ -328,38 +346,52 @@ function Layout({ children }) {
               </div>
               <div className='ml-4 flex items-center md:ml-6'>
                 {/* User dropdown */}
-                <Menu as='div' className='relative ml-3'>
-                  <Menu.Button className='flex max-w-xs items-center rounded-full text-sm focus:outline-none'>
-                    <span className='sr-only'>Open current user menu</span>
-                    <div className='flex h-8 w-8 select-none items-center justify-center rounded-full bg-gray-800'>
-                      <span className='text-center text-xs font-normal capitalize leading-none text-white'>
-                        {auth?.name?.[0]}
-                      </span>
-                    </div>
+                <Menu as='div' className='relative inline-block text-left'>
+                  <span className='sr-only'>Open current user menu</span>
+                  <Menu.Button className='flex h-8 w-8 select-none items-center justify-center rounded-full bg-gray-800'>
+                    <span className='text-center text-xs font-normal capitalize leading-none text-white'>
+                      {auth?.name?.[0]}
+                    </span>
                   </Menu.Button>
-                  <Menu.Items className='absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900'>
-                    {subNavigation.map(item => (
-                      <Menu.Item key={item.name}>
-                        <>
-                          {item.href && (
-                            <Link href={item.href}>
-                              <a className='block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100'>
-                                {item.name}
-                              </a>
-                            </Link>
-                          )}
-                          {item.onClick && (
-                            <button
-                              className='block w-full py-2 px-4 text-left text-sm text-gray-700 hover:bg-gray-100'
-                              onClick={item.onClick}
-                            >
+
+                  <Transition
+                    as={Fragment}
+                    enter='transition ease-out duration-100'
+                    enterFrom='transform opacity-0 scale-95'
+                    enterTo='transform opacity-100 scale-100'
+                    leave='transition ease-in duration-75'
+                    leaveFrom='transform opacity-100 scale-100'
+                    leaveTo='transform opacity-0 scale-95'
+                  >
+                    <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                      <div className='px-4 py-3'>
+                        <p className='text-sm'>Signed in as</p>
+                        <p className='truncate text-sm font-semibold text-gray-900'>
+                          {auth?.name}
+                        </p>
+                      </div>
+                      <div className='py-1'>
+                        {subNavigation.map(item => (
+                          <Menu.Item href={item.href} key={item.name}>
+                            <a className='block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100'>
                               {item.name}
-                            </button>
-                          )}
-                        </>
-                      </Menu.Item>
-                    ))}
-                  </Menu.Items>
+                            </a>
+                          </Menu.Item>
+                        ))}
+                      </div>
+                      <div className='py-1'>
+                        <Menu.Item>
+                          <button
+                            type='button'
+                            onClick={() => logout()}
+                            className='block w-full py-2 px-4 text-left text-sm text-gray-700 hover:bg-gray-100'
+                          >
+                            Sign out
+                          </button>
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
                 </Menu>
               </div>
             </div>
