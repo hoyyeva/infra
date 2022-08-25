@@ -36,14 +36,14 @@ export function Providers({ providers }) {
                 onClick={() => oidcLogin(p)}
                 key={p.id}
                 title={`${p.name} — ${p.url}`}
-                className='my-2 flex w-full items-center rounded-md border border-gray-700 px-4 py-3 hover:border-gray-600'
+                className='my-2 inline-flex w-full rounded-md border border-gray-300 bg-white py-3 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50'
               >
                 <img
                   alt='identity provider icon'
                   className='h-4'
                   src={`/providers/${p.kind}.svg`}
                 />
-                <span className='items-center pl-4 text-xs text-gray-300'>
+                <span className='items-center pl-4 text-xs text-gray-400'>
                   {providersList.filter(i => i.kind === p.kind) ? (
                     <span>
                       <span>Login with </span>
@@ -117,8 +117,8 @@ export default function Login() {
 
   return (
     <>
-      <h1 className='text-base font-bold leading-snug'>Login to Infra</h1>
-      <h2 className='my-3 max-w-[260px] text-center text-xs text-gray-300'>
+      <h1 className='text-xl font-bold leading-snug'>Login to Infra</h1>
+      <h2 className='my-3 text-center text-sm text-gray-400'>
         Welcome back. Login with your credentials{' '}
         {providers?.length > 0 && 'or via your identity provider.'}
       </h2>
@@ -130,10 +130,10 @@ export default function Login() {
               className='absolute inset-0 flex items-center'
               aria-hidden='true'
             >
-              <div className='w-full border-t border-gray-800' />
+              <div className='w-full border-t border-gray-400' />
             </div>
             <div className='relative flex justify-center text-sm'>
-              <span className='bg-black px-2 text-2xs text-gray-300'>OR</span>
+              <span className='bg-white px-2 text-2xs text-gray-400'>OR</span>
             </div>
           </div>
         </>
@@ -143,7 +143,7 @@ export default function Login() {
         className='relative flex w-full max-w-sm flex-col'
       >
         <div className='my-2 w-full'>
-          <label htmlFor='name' className='text-3xs uppercase text-gray-500'>
+          <label htmlFor='name' className='text-2xs font-medium text-gray-700'>
             Email
           </label>
           <input
@@ -155,15 +155,15 @@ export default function Login() {
               setName(e.target.value)
               setError('')
             }}
-            className={`w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:border-gray-200 focus:outline-none ${
-              error ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              error ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
         </div>
         <div className='my-2 w-full'>
           <label
             htmlFor='password'
-            className='text-3xs uppercase text-gray-500'
+            className='text-2xs font-medium text-gray-700'
           >
             Password
           </label>
@@ -177,24 +177,26 @@ export default function Login() {
               setPassword(e.target.value)
               setError('')
             }}
-            className={`w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              error ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              error ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
         </div>
+        {isEmailConfigured && (
+          <div className='mt-4 flex items-center justify-end text-sm'>
+            <Link href='/password-reset'>
+              <a className='font-medium text-blue-600 hover:text-blue-500'>
+                Forgot your password?
+              </a>
+            </Link>
+          </div>
+        )}
         <button
           disabled={!name || !password}
-          className='mt-6 mb-2 rounded-lg border border-violet-300 px-4 py-3 text-2xs text-violet-100 hover:border-violet-100 disabled:pointer-events-none disabled:opacity-30'
+          className='mt-4 mb-2 flex w-full justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:pointer-events-none disabled:opacity-30'
         >
           Login
         </button>
-        {isEmailConfigured && (
-          <Link href='/password-reset'>
-            <a className='text-3xs text-violet-100 hover:border-violet-100'>
-              I forgot my password
-            </a>
-          </Link>
-        )}
         {error && (
           <p className='absolute -bottom-3.5 mx-auto w-full text-center text-2xs text-pink-400'>
             {error}

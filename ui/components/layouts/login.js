@@ -19,10 +19,10 @@ export default function Login({ children }) {
   }
 
   return (
-    <div className='flex min-h-full w-full flex-col justify-center'>
-      <div className='mx-auto my-8 flex w-full max-w-xs flex-col items-center justify-center rounded-lg border border-gray-800 px-5 pt-8 pb-6'>
-        <div className='mb-4 rounded-full border border-violet-200/25 p-2.5'>
-          <img alt='infra icon' className='h-12 w-12' src='/infra-color.svg' />
+    <div className='mt-8 flex min-h-full flex-col justify-center sm:mx-auto sm:w-full sm:max-w-md'>
+      <div className='flex flex-col items-center justify-center bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
+        <div className='mb-4 rounded-full border border-gray-300 p-2'>
+          <img alt='infra icon' className='h-14 w-14' src='/infra-color.svg' />
         </div>
         {children}
       </div>

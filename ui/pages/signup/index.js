@@ -83,13 +83,13 @@ export default function Signup() {
 
   return (
     <>
-      <h1 className='text-base font-bold leading-snug'>Welcome to Infra</h1>
-      <h2 className='my-1.5 max-w-md text-center text-xs text-gray-400'>
+      <h1 className='text-xl font-bold leading-snug'>Welcome to Infra</h1>
+      <h2 className='my-3 text-center text-sm text-gray-400'>
         Set up your admin user to get started.
       </h2>
       <form onSubmit={onSubmit} className='flex w-full max-w-sm flex-col'>
         <div className='my-2 w-full'>
-          <label htmlFor='name' className='text-3xs uppercase text-gray-500'>
+          <label htmlFor='name' className='text-2xs font-medium text-gray-700'>
             Email
           </label>
           <input
@@ -101,8 +101,8 @@ export default function Signup() {
               setErrors({})
               setError('')
             }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.name ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              errors.name ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
           {errors.name && <ErrorMessage message={errors.name} />}
@@ -110,7 +110,7 @@ export default function Signup() {
         <div className='my-2 w-full'>
           <label
             htmlFor='password'
-            className='text-3xs uppercase text-gray-500'
+            className='text-2xs font-medium text-gray-700'
           >
             Password
           </label>
@@ -123,8 +123,8 @@ export default function Signup() {
               setErrors({})
               setError('')
             }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.password ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              errors.password ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
           {errors.password && <ErrorMessage message={errors.password} />}
@@ -132,7 +132,7 @@ export default function Signup() {
         <div className='my-2 w-full'>
           <label
             htmlFor='password'
-            className='text-3xs uppercase text-gray-500'
+            className='text-2xs font-medium text-gray-700'
           >
             Confirm Password
           </label>
@@ -146,19 +146,22 @@ export default function Signup() {
               setErrors({})
               setError('')
             }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.confirmPassword ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              errors.confirmPassword ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
           {errors.confirmPassword && (
             <ErrorMessage message={errors.confirmPassword} />
           )}
         </div>
-        <div className='my-2 w-full pt-6 text-2xs uppercase leading-none text-gray-400'>
+        <div className='my-2 w-full pt-6 text-sm leading-none text-gray-400'>
           Organization
         </div>
         <div className='my-2 w-full'>
-          <label htmlFor='orgName' className='text-3xs uppercase text-gray-500'>
+          <label
+            htmlFor='orgName'
+            className='text-2xs font-medium text-gray-700'
+          >
             Name
           </label>
           <input
@@ -173,15 +176,15 @@ export default function Signup() {
                 setSubDomain(getURLSafeDomain(e.target.value))
               }
             }}
-            className={`mb-1 w-full border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-              errors.org?.name ? 'border-pink-500/60' : ''
+            className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+              errors.org?.name ? 'border-pink-500' : 'border-gray-800'
             }`}
           />
         </div>
         <div className='my-2 w-full'>
           <label
-            htmlFor='orgDomain'
-            className='text-3xs uppercase text-gray-500'
+            htmlFor='orgDoman'
+            className='text-2xs font-medium text-gray-700'
           >
             Domain
           </label>
@@ -197,11 +200,11 @@ export default function Signup() {
                 setErrors({})
                 setError('')
               }}
-              className={`mb-1 w-2/3 border-b border-gray-800 bg-transparent px-px py-2 text-2xs placeholder:italic focus:border-b focus:outline-none focus:ring-gray-200 ${
-                errors.org?.subDomain ? 'border-pink-500/60' : ''
+              className={`w-2/3 border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-500 focus:outline-none ${
+                errors.org?.subDomain ? 'border-pink-500' : 'border-gray-800'
               }`}
             />
-            <div className='mb-1 w-1/3 border-b border-gray-800 py-2 text-center text-2xs text-gray-500'>
+            <div className='mt-2 w-1/3 items-center border border-gray-300 py-2 text-center text-2xs text-gray-500'>
               .{baseDomain}
             </div>
             {errors.domain && <ErrorMessage message={errors.domain} />}
@@ -216,7 +219,7 @@ export default function Signup() {
             !subDomain ||
             submitted
           }
-          className='my-2 rounded-lg border border-violet-300 px-4 py-3 text-2xs text-violet-100 hover:border-violet-100 disabled:pointer-events-none disabled:opacity-30'
+          className='mt-4 mb-2 flex w-full justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 disabled:pointer-events-none disabled:opacity-30'
         >
           Get Started
         </button>
