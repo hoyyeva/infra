@@ -58,10 +58,7 @@ export default function PasswordReset() {
   return (
     <form onSubmit={onSubmit} className='flex flex-col'>
       <div className='my-2 w-full'>
-        <label
-          htmlFor='name'
-          className='text-3xs font-semibold uppercase dark:text-gray-400'
-        >
+        <label htmlFor='name' className='text-3xs font-semibold uppercase'>
           New Password
         </label>
         <input
@@ -74,17 +71,14 @@ export default function PasswordReset() {
             setErrors({})
             setError('')
           }}
-          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
             errors.password ? 'border-pink-500' : 'border-gray-800'
           }`}
         />
         {errors.password && <ErrorMessage message={errors.password} />}
       </div>
       <div className='my-2 w-full'>
-        <label
-          htmlFor='password'
-          className='text-3xs font-semibold uppercase dark:text-gray-400'
-        >
+        <label htmlFor='password' className='text-3xs font-semibold uppercase'>
           Confirm New Password
         </label>
         <input
@@ -97,7 +91,7 @@ export default function PasswordReset() {
             setErrors({})
             setError('')
           }}
-          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+          className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
             errors.confirmPassword ? 'border-pink-500' : 'border-gray-800'
           }`}
         />
@@ -107,14 +101,14 @@ export default function PasswordReset() {
       </div>
       <div className='mt-6 flex flex-row items-center justify-end'>
         <Link href='/account'>
-          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
+          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
             Cancel
           </a>
         </Link>
         <button
           type='submit'
           disabled={!password || !confirmPassword}
-          className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
+          className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200'
         >
           Reset
         </button>

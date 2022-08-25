@@ -130,7 +130,7 @@ export default function Destinations() {
   const loading = adminLoading || !data
 
   return (
-    <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
         <title>Clusters - Infra</title>
       </Head>
@@ -156,7 +156,7 @@ export default function Destinations() {
                     title='There are no clusters'
                     subtitle='There is currently no cluster connected to Infra'
                     iconPath='/destinations.svg'
-                    icon={<ChipIcon className='dark:text-white' />}
+                    icon={<ChipIcon />}
                     buttonHref={admin && '/destinations/add'}
                     buttonText='Cluster'
                   />

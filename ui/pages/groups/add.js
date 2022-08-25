@@ -34,7 +34,7 @@ function EmailsSelectInput({ selectedEmails, setSelectedEmails }) {
   }
 
   return (
-    <div className='bg-gray-100 px-4 py-3 dark:bg-gray-900'>
+    <div className='bg-gray-100 px-4 py-3'>
       <TypeaheadCombobox
         selectedEmails={selectedEmails}
         setSelectedEmails={setSelectedEmails}
@@ -134,14 +134,14 @@ export default function GroupsAdd() {
       <div className='space-y-4 px-4 py-5 md:px-6 xl:px-0'>
         <div className='flex flex-col'>
           <div className='flex flex-row items-center space-x-2'>
-            <UserGroupIcon className='h-6 w-6 dark:text-white' />
+            <UserGroupIcon className='h-6 w-6' />
             <div>
               <h1 className='text-base'>Create Group</h1>
             </div>
           </div>
           <div className='mt-6 flex flex-col space-y-1'>
             <div className='mt-4'>
-              <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+              <label className='text-2xs font-medium text-gray-700'>
                 Name Your Group
               </label>
               <input
@@ -151,7 +151,7 @@ export default function GroupsAdd() {
                 placeholder='enter the group name here'
                 value={groupName}
                 onChange={e => handleGroupNameInputChange(e.target.value)}
-                className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                   errors.name ? 'border-pink-500' : 'border-gray-800'
                 }`}
               />
@@ -166,7 +166,7 @@ export default function GroupsAdd() {
           </div>
           <div className='mt-6 flex flex-row items-center justify-end'>
             <Link href='/groups'>
-              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
+              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
                 Cancel
               </a>
             </Link>
@@ -174,7 +174,7 @@ export default function GroupsAdd() {
               type='button'
               onClick={() => handleCreateGroup()}
               disabled={!groupName}
-              className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
+              className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200'
             >
               Create Group
             </button>

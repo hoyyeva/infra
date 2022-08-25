@@ -30,7 +30,7 @@ export default function Account() {
       <Head>
         <title>Account - Infra</title>
       </Head>
-      <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+      <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
         <div className='pb-6'>
           <PageHeader header='Account' />
         </div>
@@ -39,7 +39,7 @@ export default function Account() {
             <div className='flex flex-1 flex-col space-y-8'>
               <div className='pt-6'>
                 <div className='flex flex-row items-center space-x-2'>
-                  <KeyIcon className='h-6 w-6 dark:text-white' />
+                  <KeyIcon className='h-6 w-6' />
                   <div>
                     <h1 className='text-base'>Reset Password</h1>
                   </div>

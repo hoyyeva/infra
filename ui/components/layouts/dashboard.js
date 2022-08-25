@@ -24,11 +24,7 @@ function Nav({ navigation, admin }) {
       <div className='mb-2 flex flex-shrink-0 select-none items-center'>
         <Link href='/'>
           <a>
-            <img
-              className='h-8 dark:fill-white dark:text-white'
-              src='/infra.svg'
-              alt='Infra'
-            />
+            <img className='h-8' src='/InfraLogo.svg' alt='Infra' />
           </a>
         </Link>
       </div>
@@ -94,7 +90,7 @@ function SidebarNav({ children, open, setOpen }) {
             leaveFrom='translate-x-0'
             leaveTo='-translate-x-full'
           >
-            <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-white px-6 pt-5 pb-4 dark:bg-black'>
+            <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-white px-6 pt-5 pb-4'>
               <Transition.Child
                 as={Fragment}
                 enter='ease-in-out duration-300'
@@ -185,17 +181,7 @@ function Layout({ children }) {
       href: '/destinations',
       testIcon: ChipIcon,
       icon: '/destinations.svg',
-      heroIcon: (
-        <ChipIcon
-          className={`
-            ${
-              router.asPath.startsWith('/destinations')
-                ? 'dark:text-white'
-                : 'dark:text-white dark:opacity-40'
-            }
-          `}
-        />
-      ),
+      heroIcon: <ChipIcon />,
     },
     {
       name: 'Providers',
@@ -203,17 +189,7 @@ function Layout({ children }) {
       icon: '/providers.svg',
       admin: true,
       testIcon: ViewGridIcon,
-      heroIcon: (
-        <ViewGridIcon
-          className={`
-            ${
-              router.asPath.startsWith('/providers')
-                ? 'dark:text-white'
-                : 'dark:text-white dark:opacity-40'
-            }
-          `}
-        />
-      ),
+      heroIcon: <ViewGridIcon />,
     },
     {
       name: 'Groups',
@@ -221,17 +197,7 @@ function Layout({ children }) {
       icon: '/groups.svg',
       admin: true,
       testIcon: UserGroupIcon,
-      heroIcon: (
-        <UserGroupIcon
-          className={`
-            ${
-              router.asPath.startsWith('/groups')
-                ? 'dark:text-white'
-                : 'dark:text-white dark:opacity-40'
-            }
-          `}
-        />
-      ),
+      heroIcon: <UserGroupIcon />,
     },
     {
       name: 'Users',
@@ -239,17 +205,7 @@ function Layout({ children }) {
       icon: '/users.svg',
       admin: true,
       testIcon: UserIcon,
-      heroIcon: (
-        <UserIcon
-          className={`
-            ${
-              router.asPath.startsWith('/users')
-                ? 'dark:text-white'
-                : 'dark:text-white dark:opacity-40'
-            }
-          `}
-        />
-      ),
+      heroIcon: <UserIcon />,
     },
     {
       name: 'Settings',
@@ -257,17 +213,7 @@ function Layout({ children }) {
       icon: '/providers.svg',
       admin: true,
       testIcon: CogIcon,
-      heroIcon: (
-        <CogIcon
-          className={`
-            ${
-              router.asPath.startsWith('/settings')
-                ? 'dark:text-white'
-                : 'dark:text-white dark:opacity-40'
-            }
-          `}
-        />
-      ),
+      heroIcon: <CogIcon />,
     },
   ]
 
@@ -294,17 +240,17 @@ function Layout({ children }) {
         <Nav navigation={navigation} admin={admin} />
       </SidebarNav>
       <div className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col'>
-        <div className='flex flex-grow flex-col overflow-y-auto border-r border-gray-100 px-6 pt-5 pb-4 dark:border-gray-800'>
+        <div className='flex flex-grow flex-col overflow-y-auto border-r border-gray-100 px-6 pt-5 pb-4'>
           <Nav navigation={navigation} admin={admin} />
         </div>
       </div>
 
       <div className='md:pl-64'>
-        <div className='mx-auto flex flex-col px-0 md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
-          <div className='sticky top-0 flex h-16 flex-shrink-0 bg-white dark:border-gray-800 dark:bg-black'>
+        <div className='mx-auto flex flex-col px-0 md:px-10 xl:px-[8rem] 2xl:m-auto 2xl:max-w-6xl'>
+          <div className='sticky top-0 flex h-16 flex-shrink-0 bg-white'>
             <button
               type='button'
-              className='px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:border-gray-800 md:hidden'
+              className='px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
               onClick={() => setSidebarOpen(true)}
             >
               <span className='sr-only'>Open sidebar</span>

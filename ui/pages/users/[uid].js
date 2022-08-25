@@ -204,7 +204,7 @@ export default function UserDetail() {
               modalMessage={
                 <>
                   Are you sure you want to remove{' '}
-                  <span className='font-bold text-white'>{user?.name}?</span>
+                  <span className='font-bold'>{user?.name}?</span>
                 </>
               }
             />

@@ -56,7 +56,7 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
                           setDeleteId(grant.id)
                           setOpen(true)
                         }}
-                        className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'
+                        className='cursor-pointer text-4xs uppercase text-gray-800 hover:text-gray-400'
                       >
                         Revoke
                       </button>
@@ -79,7 +79,7 @@ function AdminList({ grants, users, groups, onRemove, auth, selfGroups }) {
               !grantsList?.find(grant => grant.id === deleteId)?.message ? (
                 <>
                   Are you sure you want to revoke admin access for{' '}
-                  <span className='font-bold text-white'>
+                  <span className='font-bold'>
                     {grantsList?.find(grant => grant.id === deleteId)?.name}
                   </span>
                   ?
@@ -108,7 +108,7 @@ export default function Settings() {
   )
 
   return (
-    <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
         <title>Account - Infra</title>
       </Head>
@@ -119,7 +119,7 @@ export default function Settings() {
         <div className='flex flex-1 flex-col space-y-8'>
           <div className='pt-6'>
             <div className='flex flex-row items-center space-x-2'>
-              <CogIcon className='h-6 w-6 dark:text-white' />
+              <CogIcon />
               <div>
                 <h1 className='text-base'>Infra Admin</h1>
               </div>

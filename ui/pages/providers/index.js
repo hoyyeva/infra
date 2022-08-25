@@ -107,10 +107,8 @@ function ProviderTable({ providers, mutate }) {
         message={
           <>
             Are you sure you want to delete{' '}
-            <span className='font-bold text-white'>
-              {selectedProvider?.name}
-            </span>
-            ? This action cannot be undone.
+            <span className='font-bold'>{selectedProvider?.name}</span>? This
+            action cannot be undone.
           </>
         }
       />
@@ -132,7 +130,7 @@ export default function Providers() {
   const loading = adminLoading || (!providers && !error)
 
   return (
-    <div className='md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
         <title>Identity Providers - Infra</title>
       </Head>
@@ -164,7 +162,7 @@ export default function Providers() {
                       </>
                     }
                     iconPath='/providers.svg'
-                    icon={<ViewGridIcon className='dark:text-white' />}
+                    icon={<ViewGridIcon />}
                     buttonHref='/providers/add'
                     buttonText='Provider'
                   />

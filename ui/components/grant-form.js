@@ -50,7 +50,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
           }}
         >
           <Combobox.Input
-            className='relative w-full bg-transparent py-3 pr-2 text-xs placeholder:italic focus:border-gray-800 focus:outline-none disabled:opacity-30 dark:border-gray-900 dark:focus:border-gray-200'
+            className='relative w-full bg-transparent py-3 pr-2 text-xs placeholder:italic focus:border-gray-800 focus:outline-none disabled:opacity-30'
             placeholder='User or group'
             onChange={e => setQuery(e.target.value)}
             onFocus={() => {
@@ -66,7 +66,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
                   key={f.id}
                   value={f}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 px-3 text-gray-200 dark:text-white dark:hover:bg-gray-700 ${
+                    `relative cursor-default select-none py-2 px-3 text-gray-200 ${
                       active ? 'bg-gray-700' : ''
                     }`
                   }
@@ -90,7 +90,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
         <button
           disabled={!selected}
           type='submit'
-          className='flex items-center rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800'
+          className='flex items-center rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200'
         >
           <PlusIcon className='mr-1 h-3 w-3' />
           <div className='text-2xs leading-none'>Add</div>

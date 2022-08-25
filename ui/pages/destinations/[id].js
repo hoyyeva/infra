@@ -243,9 +243,7 @@ export default function DestinationDetail() {
             modalMessage={
               <>
                 Are you sure you want to disconnect{' '}
-                <span className='font-bold text-white'>
-                  {destination?.name}?
-                </span>
+                <span className='font-bold'>{destination?.name}?</span>
                 <br />
                 Note: you must also uninstall the Infra Connector from this
                 cluster.

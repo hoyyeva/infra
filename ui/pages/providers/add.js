@@ -158,9 +158,9 @@ export default function ProvidersAddDetails() {
       <Head>
         <title>Add Identity Provider - {kind}</title>
       </Head>
-      <div className='flex flex-col space-y-4 px-4 py-5 md:px-6 xl:px-20 2xl:m-auto 2xl:max-w-6xl'>
+      <div className='flex flex-col space-y-4 px-4 py-5 md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
         <div className='flex flex-row items-center space-x-2 pb-5'>
-          <ViewGridIcon className='h-6 w-6 dark:text-white' />
+          <ViewGridIcon className='h-6 w-6' />
           <h1 className='text-base'>Connect an Identity Provider</h1>
         </div>
 
@@ -182,7 +182,7 @@ export default function ProvidersAddDetails() {
               <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
                 <div className='sm:col-span-6 lg:col-span-5'>
                   <div className='pb-3'>
-                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    <label className='text-2xs font-medium text-gray-700'>
                       Provider Kind
                     </label>
                   </div>
@@ -205,7 +205,7 @@ export default function ProvidersAddDetails() {
                 </div>
 
                 <div className='sm:col-span-6 lg:col-span-5'>
-                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                  <label className='text-2xs font-medium text-gray-700'>
                     Name of Provider
                   </label>
                   <input
@@ -218,7 +218,7 @@ export default function ProvidersAddDetails() {
                       setErrors({})
                       setError('')
                     }}
-                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                       errors.name ? 'border-pink-500' : ''
                     }`}
                   />
@@ -233,7 +233,7 @@ export default function ProvidersAddDetails() {
                   Additional Information
                 </h3>
                 <div className='mt-1 flex flex-row items-center space-x-1 text-sm text-gray-400'>
-                  <InformationCircleIcon className='h-4 w-4 dark:text-white' />
+                  <InformationCircleIcon className='h-4 w-4' />
                   <a
                     className='underline hover:text-gray-500'
                     target='_blank'
@@ -247,7 +247,7 @@ export default function ProvidersAddDetails() {
               <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
                 {kind !== 'google' && (
                   <div className='sm:col-span-6 lg:col-span-5'>
-                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    <label className='text-2xs font-medium text-gray-700'>
                       URL (Domain)
                     </label>
                     <input
@@ -260,7 +260,7 @@ export default function ProvidersAddDetails() {
                         setErrors({})
                         setError('')
                       }}
-                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                         errors.url ? 'border-pink-500' : ''
                       }`}
                     />
@@ -269,7 +269,7 @@ export default function ProvidersAddDetails() {
                 )}
 
                 <div className='sm:col-span-6 lg:col-span-5'>
-                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                  <label className='text-2xs font-medium text-gray-700'>
                     Client ID
                   </label>
                   <input
@@ -282,7 +282,7 @@ export default function ProvidersAddDetails() {
                       setErrors({})
                       setError('')
                     }}
-                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                       errors.clientid ? 'border-pink-500' : ''
                     }`}
                   />
@@ -292,7 +292,7 @@ export default function ProvidersAddDetails() {
                 </div>
 
                 <div className='sm:col-span-6 lg:col-span-5'>
-                  <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                  <label className='text-2xs font-medium text-gray-700'>
                     Client Secret
                   </label>
                   <input
@@ -305,7 +305,7 @@ export default function ProvidersAddDetails() {
                       setErrors({})
                       setError('')
                     }}
-                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                    className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                       errors.clientsecret ? 'border-pink-500' : ''
                     }`}
                   />
@@ -323,7 +323,7 @@ export default function ProvidersAddDetails() {
                     Optional Information for Google Groups
                   </h3>
                   <div className='mt-1 flex flex-row items-center space-x-1 text-sm text-gray-400'>
-                    <InformationCircleIcon className='h-4 w-4 dark:text-white' />
+                    <InformationCircleIcon className='h-4 w-4' />
                     <a
                       className='text-gray-400 underline hover:text-gray-500'
                       target='_blank'
@@ -336,13 +336,13 @@ export default function ProvidersAddDetails() {
                 </div>
                 <div className='mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6'>
                   <div className='sm:col-span-6 lg:col-span-5'>
-                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    <label className='text-2xs font-medium text-gray-700'>
                       Private Key
                     </label>
                     <input
                       type='file'
                       onChange={parseGoogleCredentialFile}
-                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                         errors.privatekey ? 'border-pink-500' : ''
                       }`}
                     />
@@ -352,7 +352,7 @@ export default function ProvidersAddDetails() {
                   </div>
 
                   <div className='sm:col-span-6 lg:col-span-5'>
-                    <label className='text-2xs font-medium text-gray-700 dark:text-gray-400'>
+                    <label className='text-2xs font-medium text-gray-700'>
                       Workspace Domain Admin
                     </label>
                     <input
@@ -365,7 +365,7 @@ export default function ProvidersAddDetails() {
                         setErrors({})
                         setError('')
                       }}
-                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none dark:border-gray-900 dark:focus:border-gray-200 ${
+                      className={`w-full border-b border-gray-300 bg-transparent px-px py-3 text-2xs placeholder:italic focus:border-b focus:border-gray-800 focus:outline-none ${
                         errors.domainadminemail ? 'border-pink-500' : ''
                       }`}
                     />
@@ -382,14 +382,14 @@ export default function ProvidersAddDetails() {
           <div className='pt-5 pb-3'>
             <div className='flex items-center justify-end'>
               <Link href='/providers'>
-                <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400 dark:text-gray-400 dark:hover:text-white'>
+                <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
                   Cancel
                 </a>
               </Link>
               <button
                 type='submit'
                 disabled={!name || !url || !clientID || !clientSecret}
-                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:cursor-pointer hover:bg-gray-200 disabled:hover:cursor-not-allowed disabled:hover:bg-gray-100 dark:bg-gray-800 dark:text-white hover:dark:border-white hover:dark:bg-gray-800 dark:disabled:bg-gray-800'
+                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:cursor-pointer hover:bg-gray-200 disabled:hover:cursor-not-allowed disabled:hover:bg-gray-100'
               >
                 Connect Provider
               </button>

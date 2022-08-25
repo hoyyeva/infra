@@ -50,7 +50,7 @@ export default function TypeaheadCombobox({
               key={f.id}
               value={f}
               className={({ active }) =>
-                `relative cursor-default select-none py-2 px-3 text-gray-200 dark:text-white dark:hover:bg-gray-700 ${
+                `relative cursor-default select-none py-2 px-3 text-gray-200 ${
                   active ? 'bg-gray-700' : ''
                 }`
               }
