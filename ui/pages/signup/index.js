@@ -204,7 +204,7 @@ export default function Signup() {
                 errors.org?.subDomain ? 'border-pink-500' : 'border-gray-800'
               }`}
             />
-            <div className='mt-2 w-1/3 items-center border border-gray-300 py-2 text-center text-2xs text-gray-500'>
+            <div className='mt-2 w-1/3 items-center border-b border-gray-300 py-2 text-center text-2xs text-gray-500'>
               .{baseDomain}
             </div>
             {errors.domain && <ErrorMessage message={errors.domain} />}

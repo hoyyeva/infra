@@ -119,7 +119,7 @@ export default function Settings() {
         <div className='flex flex-1 flex-col space-y-8'>
           <div className='pt-6'>
             <div className='flex flex-row items-center space-x-2'>
-              <CogIcon />
+              <CogIcon className='h-6 w-6' />
               <div>
                 <h1 className='text-base'>Infra Admin</h1>
               </div>

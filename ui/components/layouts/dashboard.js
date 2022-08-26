@@ -247,7 +247,7 @@ function Layout({ children }) {
 
       <div className='md:pl-64'>
         <div className='mx-auto flex flex-col px-0 md:px-10 xl:px-[8rem] 2xl:m-auto 2xl:max-w-6xl'>
-          <div className='sticky top-0 flex h-16 flex-shrink-0 bg-white'>
+          <div className='sticky top-0 z-50 flex h-16 flex-shrink-0 bg-white'>
             <button
               type='button'
               className='px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'

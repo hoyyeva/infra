@@ -207,7 +207,7 @@ export default function DestinationsAdd() {
               </div>
               <div className='mt-6 flex flex-row items-center justify-end'>
                 <button
-                  className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:opacity-10'
+                  className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
                   disabled={!name || currentStep !== 0}
                   type='submit'
                 >
@@ -255,13 +255,11 @@ export default function DestinationsAdd() {
               </div>
               <div className='mt-6 flex flex-row items-center justify-end'>
                 <button
-                  className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:opacity-10'
+                  className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
                   type='button'
                   disabled={currentStep !== 1}
                   onClick={() => {
                     const step = currentStep
-                    console.log(currentStep)
-                    console.log(step)
                     setCurrentStep(step + 1)
 
                     let stepsList = steps
@@ -295,7 +293,7 @@ export default function DestinationsAdd() {
                   <h3 className='text-xs text-gray-500'>✓ Connected</h3>
                   <div className='flex items-center justify-end'>
                     <Link href='/destinations'>
-                      <a className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:hover:bg-gray-200'>
+                      <a className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200 disabled:hover:bg-gray-500'>
                         Finish
                       </a>
                     </Link>

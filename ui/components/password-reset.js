@@ -99,16 +99,16 @@ export default function PasswordReset() {
           <ErrorMessage message={errors.confirmPassword} />
         )}
       </div>
-      <div className='mt-6 flex flex-row items-center justify-end'>
+      <div className='mt-6 flex flex-row items-center justify-end space-x-3'>
         <Link href='/account'>
-          <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
+          <a className='inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-2xs font-medium text-gray-700 shadow-sm hover:bg-gray-50'>
             Cancel
           </a>
         </Link>
         <button
           type='submit'
           disabled={!password || !confirmPassword}
-          className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200'
+          className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
         >
           Reset
         </button>

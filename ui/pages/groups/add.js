@@ -127,7 +127,7 @@ export default function GroupsAdd() {
   }
 
   return (
-    <>
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
         <title>Create Group</title>
       </Head>
@@ -164,9 +164,9 @@ export default function GroupsAdd() {
               />
             </section>
           </div>
-          <div className='mt-6 flex flex-row items-center justify-end'>
+          <div className='mt-6 flex flex-row items-center justify-end space-x-3'>
             <Link href='/groups'>
-              <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
+              <a className='inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-2xs font-medium text-gray-700 shadow-sm hover:bg-gray-50'>
                 Cancel
               </a>
             </Link>
@@ -174,7 +174,7 @@ export default function GroupsAdd() {
               type='button'
               onClick={() => handleCreateGroup()}
               disabled={!groupName}
-              className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:bg-gray-200'
+              className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
             >
               Create Group
             </button>
@@ -182,7 +182,7 @@ export default function GroupsAdd() {
         </div>
         {error && <ErrorMessage message={error} />}
       </div>
-    </>
+    </div>
   )
 }
 

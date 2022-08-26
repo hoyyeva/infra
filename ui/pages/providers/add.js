@@ -40,7 +40,7 @@ export default function ProvidersAddDetails() {
   const [kind, setKind] = useState(
     type === undefined ? providers[0].kind : type
   )
-  const [url, setURL] = useState(type === 'google' ? 'accounts.google.com' : '')
+  const [url, setURL] = useState('')
   const [clientID, setClientID] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [privateKey, setPrivateKey] = useState('')
@@ -48,9 +48,12 @@ export default function ProvidersAddDetails() {
   const [domainAdminEmail, setDomainAdminEmail] = useState('')
   const [error, setError] = useState('')
   const [errors, setErrors] = useState({})
-  const [name, setName] = useState(kind)
+  const [name, setName] = useState(type)
 
-  useEffect(() => setName(kind), [kind])
+  useEffect(() => {
+    setName(type)
+    setURL(type === 'google' ? 'accounts.google.com' : '')
+  }, [type])
 
   function docLink() {
     if (kind == 'azure') {
@@ -154,7 +157,7 @@ export default function ProvidersAddDetails() {
   }
 
   return (
-    <>
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>
         <title>Add Identity Provider - {kind}</title>
       </Head>
@@ -380,16 +383,16 @@ export default function ProvidersAddDetails() {
           {error && <ErrorMessage message={error} center />}
 
           <div className='pt-5 pb-3'>
-            <div className='flex items-center justify-end'>
+            <div className='flex items-center justify-end space-x-3'>
               <Link href='/providers'>
-                <a className='-ml-4 border-0 px-4 py-2 text-4xs uppercase hover:text-gray-400'>
+                <a className='inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-2xs font-medium text-gray-700 shadow-sm hover:bg-gray-50'>
                   Cancel
                 </a>
               </Link>
               <button
                 type='submit'
                 disabled={!name || !url || !clientID || !clientSecret}
-                className='flex-none self-end rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-2xs hover:cursor-pointer hover:bg-gray-200 disabled:hover:cursor-not-allowed disabled:hover:bg-gray-100'
+                className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
               >
                 Connect Provider
               </button>
@@ -397,7 +400,7 @@ export default function ProvidersAddDetails() {
           </div>
         </form>
       </div>
-    </>
+    </div>
   )
 }
 

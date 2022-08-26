@@ -136,7 +136,6 @@ export default function Destinations() {
       </Head>
       <div className='pb-6'>
         <PageHeader
-          header='Clusters'
           buttonHref={admin && '/destinations/add'}
           buttonLabel='Cluster'
         />

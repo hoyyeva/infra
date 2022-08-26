@@ -83,7 +83,7 @@ function ProviderTable({ providers, mutate }) {
                     setModalOpen(true)
                     setSelectedProvider(provider)
                   }}
-                  className='text-blue-600 hover:text-blue-900'
+                  className='text-xs text-blue-600 hover:text-blue-900'
                 >
                   Remove<span className='sr-only'>, {provider.name}</span>
                 </button>
@@ -136,7 +136,6 @@ export default function Providers() {
       </Head>
       <div className='pb-6'>
         <PageHeader
-          header='Providers'
           buttonHref={admin && '/providers/add'}
           buttonLabel='Provider'
         />

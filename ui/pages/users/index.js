@@ -27,15 +27,21 @@ function UserTable({ users }) {
             </th>
             <th
               scope='col'
-              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
+              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
             >
               Providers
             </th>
             <th
               scope='col'
-              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
+              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
             >
               Last Seen
+            </th>
+            <th
+              scope='col'
+              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
+            >
+              Created
             </th>
           </tr>
         </thead>
@@ -62,7 +68,19 @@ function UserTable({ users }) {
                   </dd>
                   <dt className='sr-only sm:hidden'>Last Seen</dt>
                   <dd className='mt-1 truncate text-gray-500 sm:hidden'>
-                    {dayjs(user.lastSeenAt).fromNow()}
+                    {user?.lastSeenAt ? (
+                      <>{dayjs(user.lastSeenAt).fromNow()}</>
+                    ) : (
+                      '-'
+                    )}
+                  </dd>
+                  <dt className='sr-only sm:hidden'>Created</dt>
+                  <dd className='mt-1 text-gray-500 sm:hidden'>
+                    {user?.created ? (
+                      <>created {dayjs(user.created).fromNow()}</>
+                    ) : (
+                      '-'
+                    )}
                   </dd>
                 </dl>
               </td>
@@ -76,7 +94,16 @@ function UserTable({ users }) {
               </td>
               <td className='hidden truncate px-3 py-4 text-sm text-gray-500 sm:table-cell sm:max-w-[10rem]'>
                 <div className='flex items-center py-2'>
-                  {dayjs(user.lastSeenAt).fromNow()}
+                  {user?.lastSeenAt ? (
+                    <>{dayjs(user.lastSeenAt).fromNow()}</>
+                  ) : (
+                    '-'
+                  )}
+                </div>
+              </td>
+              <td className='hidden truncate px-3 py-4 text-sm text-gray-500 sm:table-cell sm:max-w-[10rem]'>
+                <div className='flex items-center py-2'>
+                  {user?.created ? <>{dayjs(user.created).fromNow()}</> : '-'}
                 </div>
               </td>
             </tr>
@@ -105,11 +132,7 @@ export default function Users() {
         <title>Users - Infra</title>
       </Head>
       <div className='pb-6'>
-        <PageHeader
-          header='Users'
-          buttonHref={admin && '/users/add'}
-          buttonLabel='User'
-        />
+        <PageHeader buttonHref={admin && '/users/add'} buttonLabel='User' />
       </div>
       <div className='px-4 sm:px-6 md:px-0'>
         {!loading && (

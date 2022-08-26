@@ -2,6 +2,7 @@ import Head from 'next/head'
 import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { UserGroupIcon } from '@heroicons/react/outline'
+import dayjs from 'dayjs'
 
 import { useAdmin } from '../../lib/admin'
 
@@ -26,9 +27,15 @@ function GroupTable({ groups }) {
             </th>
             <th
               scope='col'
-              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell'
+              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
             >
               Users
+            </th>
+            <th
+              scope='col'
+              className='hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell'
+            >
+              Created
             </th>
           </tr>
         </thead>
@@ -43,7 +50,7 @@ function GroupTable({ groups }) {
                 <div className='flex items-center py-1.5'>
                   <div className='text-2xs sm:max-w-[10rem]'>{group.name}</div>
                 </div>
-                <dl className='font-normal lg:hidden'>
+                <dl className='font-normal sm:hidden'>
                   <dt className='sr-only sm:hidden'>Users</dt>
                   <dd className='mt-1 text-gray-500 sm:hidden'>
                     <>
@@ -57,6 +64,14 @@ function GroupTable({ groups }) {
                       )}
                     </>
                   </dd>
+                  <dt className='sr-only sm:hidden'>Created</dt>
+                  <dd className='mt-1 text-gray-500 sm:hidden'>
+                    {group?.created ? (
+                      <>created {dayjs(group.created).fromNow()}</>
+                    ) : (
+                      '-'
+                    )}
+                  </dd>
                 </dl>
               </td>
               <td className='hidden truncate px-3 py-4 text-sm text-gray-500 sm:table-cell sm:max-w-[10rem]'>
@@ -69,6 +84,11 @@ function GroupTable({ groups }) {
                       {group.totalUsers === 1 ? 'member' : 'members'}
                     </>
                   )}
+                </div>
+              </td>
+              <td className='hidden truncate px-3 py-4 text-sm text-gray-500 sm:table-cell sm:max-w-[10rem]'>
+                <div className='flex items-center py-2'>
+                  {group?.created ? <>{dayjs(group.created).fromNow()}</> : '-'}
                 </div>
               </td>
             </tr>
@@ -93,11 +113,7 @@ export default function Groups() {
     <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
       <Head>Groups - Infra</Head>
       <div className='pb-6'>
-        <PageHeader
-          header='Groups'
-          buttonHref={admin && '/groups/add'}
-          buttonLabel='Group'
-        />
+        <PageHeader buttonHref={admin && '/groups/add'} buttonLabel='Group' />
       </div>
       <div className='px-4 sm:px-6 md:px-0'>
         {!loading && (

@@ -17,7 +17,7 @@ export default function EmptyTable({
       </h2>
       {buttonHref && (
         <Link href={buttonHref} data-testid='empty-table-button-link'>
-          <button className='my-2 mx-auto flex items-center rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200'>
+          <button className='my-2 mx-auto inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800'>
             <PlusIcon className='mr-1 h-2.5 w-2.5' />
             <div className='text-2xs leading-none'>{buttonText}</div>
           </button>

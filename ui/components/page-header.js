@@ -7,7 +7,7 @@ export default function PageHeader({ header, buttonLabel, buttonHref }) {
       <h1 className='text-md font-semibold text-gray-900'>{header}</h1>
       {buttonHref && (
         <Link href={buttonHref} data-testid='page-header-button-link'>
-          <button className='flex items-center rounded-md border border-gray-400 bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200'>
+          <button className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-800'>
             <PlusIcon className='mr-1 h-3 w-3' />
             <div className='text-2xs leading-none'>{buttonLabel}</div>
           </button>
