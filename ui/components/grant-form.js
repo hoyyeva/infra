@@ -26,7 +26,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
 
   return (
     <form
-      className='my-2 flex'
+      className='my-2 flex flex-row'
       onSubmit={e => {
         e.preventDefault()
         onSubmit({
@@ -38,7 +38,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
         setSelected(null)
       }}
     >
-      <div className='flex flex-1 items-center border-b border-gray-300'>
+      <div className='flex flex-1 items-center bg-gray-100'>
         <Combobox
           as='div'
           className='relative flex-1'
@@ -50,7 +50,7 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
           }}
         >
           <Combobox.Input
-            className='relative w-full bg-transparent py-3 pr-2 text-xs placeholder:italic focus:border-gray-800 focus:outline-none disabled:opacity-30'
+            className='relative w-full bg-transparent p-3 text-xs placeholder:italic focus:border-gray-800 focus:outline-none disabled:opacity-30'
             placeholder='User or group'
             onChange={e => setQuery(e.target.value)}
             onFocus={() => {
@@ -82,18 +82,20 @@ export default function GrantForm({ roles, onSubmit = () => {} }) {
           )}
           <Combobox.Button className='hidden' ref={button} />
         </Combobox>
+      </div>
+      <div className='relative p-3'>
         {roles?.length > 1 && (
           <RoleSelect onChange={setRole} role={role} roles={roles} />
         )}
       </div>
-      <div className='relative mt-2'>
+      <div className='relative p-3'>
         <button
           disabled={!selected}
           type='submit'
           className='inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-2xs font-medium text-white shadow-sm hover:bg-gray-800'
         >
-          <PlusIcon className='mr-1 h-3 w-3' />
-          <div className='text-2xs leading-none'>Add</div>
+          <PlusIcon className='mr-1.5 h-3 w-3' />
+          <div className='text-violet-100'>Add</div>
         </button>
       </div>
     </form>

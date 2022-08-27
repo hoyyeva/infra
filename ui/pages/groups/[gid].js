@@ -249,33 +249,37 @@ export default function GroupDetail() {
               <h2 className='text-md border-b border-gray-200 py-2 font-medium text-gray-500'>
                 Access
               </h2>
-              <GrantsList
-                grants={grants}
-                onRemove={async id => {
-                  await fetch(`/api/grants/${id}`, { method: 'DELETE' })
-                  mutateGrants({ items: grants.filter(x => x.id !== id) })
-                }}
-                onChange={async (privilege, grant) => {
-                  const res = await fetch('/api/grants', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                      ...grant,
-                      privilege,
-                    }),
-                  })
+              <div className='space-y-6'>
+                <div>
+                  <GrantsList
+                    grants={grants}
+                    onRemove={async id => {
+                      await fetch(`/api/grants/${id}`, { method: 'DELETE' })
+                      mutateGrants({ items: grants.filter(x => x.id !== id) })
+                    }}
+                    onChange={async (privilege, grant) => {
+                      const res = await fetch('/api/grants', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          ...grant,
+                          privilege,
+                        }),
+                      })
 
-                  // delete old grant
-                  await fetch(`/api/grants/${grant.id}`, {
-                    method: 'DELETE',
-                  })
-                  mutateGrants({
-                    items: [
-                      ...grants.filter(f => f.id !== grant.id),
-                      await res.json(),
-                    ],
-                  })
-                }}
-              />
+                      // delete old grant
+                      await fetch(`/api/grants/${grant.id}`, {
+                        method: 'DELETE',
+                      })
+                      mutateGrants({
+                        items: [
+                          ...grants.filter(f => f.id !== grant.id),
+                          await res.json(),
+                        ],
+                      })
+                    }}
+                  />
+                </div>
+              </div>
               {!grants?.length && (
                 <EmptyData>
                   <div className='mt-6'>No access</div>

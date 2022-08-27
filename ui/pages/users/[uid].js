@@ -83,7 +83,7 @@ export default function UserDetail() {
   const grants = items?.filter(g => g.resource !== 'infra')
   const adminGroups = infraAdmins?.map(admin => admin.group)
 
-  const loading = [!adminLoading, auth, grants, groups].some(x => !x)
+  const loading = [!adminLoading, auth, grants, groups, user].some(x => !x)
 
   return (
     <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
@@ -175,76 +175,89 @@ export default function UserDetail() {
                 <h2 className='text-md border-b border-gray-200 py-2 font-medium text-gray-500'>
                   Access
                 </h2>
+                <div className='space-y-6'>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-300'>
+                      <tbody className='bg-white'>
+                        {grants
+                          ?.sort(sortByResource)
+                          ?.sort((a, b) => {
+                            if (a.user === user.id) {
+                              return -1
+                            }
+
+                            if (b.user === user.id) {
+                              return 1
+                            }
+
+                            return 0
+                          })
+                          .map(g => (
+                            <tr key={g.id} className='border-b border-gray-200'>
+                              <td className='whitespace-nowrap py-4 text-xs font-medium'>
+                                <div className='truncate font-medium text-gray-900'>
+                                  {g.resource}
+                                </div>
+                              </td>
+                              <td className='py-4 px-3 text-right text-sm text-gray-500'>
+                                {g.user !== user.id ? (
+                                  <div className='flex justify-end space-x-6'>
+                                    <div
+                                      title='This access is inherited by a group and cannot be edited here'
+                                      className='relative mx-1 self-center rounded border border-gray-800 bg-gray-800 px-2 pt-px text-2xs text-gray-400'
+                                    >
+                                      inherited
+                                    </div>
+                                    <div className='relative py-2 text-2xs text-gray-400'>
+                                      {g.privilege}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <RoleSelect
+                                    role={g.privilege}
+                                    resource={g.resource}
+                                    remove
+                                    direction='left'
+                                    onRemove={async () => {
+                                      await fetch(`/api/grants/${g.id}`, {
+                                        method: 'DELETE',
+                                      })
+                                      mutate({
+                                        items: grants.filter(
+                                          x => x.id !== g.id
+                                        ),
+                                      })
+                                    }}
+                                    onChange={async privilege => {
+                                      const res = await fetch('/api/grants', {
+                                        method: 'POST',
+                                        body: JSON.stringify({
+                                          ...g,
+                                          privilege,
+                                        }),
+                                      })
+
+                                      // delete old grant
+                                      await fetch(`/api/grants/${g.id}`, {
+                                        method: 'DELETE',
+                                      })
+                                      mutate({
+                                        items: [
+                                          ...grants.filter(f => f.id !== g.id),
+                                          await res.json(),
+                                        ],
+                                      })
+                                    }}
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
                 <div>
-                  {grants
-                    ?.sort(sortByResource)
-                    ?.sort((a, b) => {
-                      if (a.user === user.id) {
-                        return -1
-                      }
-
-                      if (b.user === user.id) {
-                        return 1
-                      }
-
-                      return 0
-                    })
-                    .map(g => (
-                      <div
-                        key={g.id}
-                        className='flex items-center justify-between text-2xs'
-                      >
-                        <div>{g.resource}</div>
-                        {g.user !== user.id ? (
-                          <div className='flex'>
-                            <div
-                              title='This access is inherited by a group and cannot be edited here'
-                              className='relative mx-1 self-center rounded border border-gray-800 bg-gray-800 px-2 pt-px text-2xs text-gray-400'
-                            >
-                              inherited
-                            </div>
-                            <div className='relative w-32 flex-none py-2 pl-3 pr-8 text-left text-2xs text-gray-400'>
-                              {g.privilege}
-                            </div>
-                          </div>
-                        ) : (
-                          <RoleSelect
-                            role={g.privilege}
-                            resource={g.resource}
-                            remove
-                            direction='left'
-                            onRemove={async () => {
-                              await fetch(`/api/grants/${g.id}`, {
-                                method: 'DELETE',
-                              })
-                              mutate({
-                                items: grants.filter(x => x.id !== g.id),
-                              })
-                            }}
-                            onChange={async privilege => {
-                              const res = await fetch('/api/grants', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                  ...g,
-                                  privilege,
-                                }),
-                              })
-
-                              // delete old grant
-                              await fetch(`/api/grants/${g.id}`, {
-                                method: 'DELETE',
-                              })
-                              mutate({
-                                items: [
-                                  ...grants.filter(f => f.id !== g.id),
-                                  await res.json(),
-                                ],
-                              })
-                            }}
-                          />
-                        )}
-                      </div>
-                    ))}
                   {!grants?.length && !loading && (
                     <EmptyData>
                       <div className='mt-6'>No access</div>

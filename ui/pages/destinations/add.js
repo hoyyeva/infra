@@ -160,7 +160,7 @@ export default function DestinationsAdd() {
                       <span className='relative block h-2 w-2 rounded-full bg-blue-600' />
                     </span>
                     <span className='ml-3 text-sm font-medium text-blue-600'>
-                      {step.name}
+                      {step?.name}
                     </span>
                   </div>
                 ) : (
@@ -173,7 +173,7 @@ export default function DestinationsAdd() {
                         <div className='h-2 w-2 rounded-full bg-gray-300 group-hover:bg-gray-400' />
                       </div>
                       <p className='ml-3 text-sm font-medium text-gray-500 group-hover:text-gray-900'>
-                        {step.name}
+                        {step?.name}
                       </p>
                     </div>
                   </div>
@@ -227,7 +227,7 @@ export default function DestinationsAdd() {
                 </p>
               </div>
 
-              <pre className='min-h-[120px] overflow-auto bg-gray-900 p-4 text-2xs text-gray-300'>
+              <pre className='min-h-[120px] overflow-auto rounded-md bg-gray-900 p-4 px-4 py-3 text-2xs leading-normal text-gray-300'>
                 {command}
               </pre>
               <div className='flex items-center justify-start'>

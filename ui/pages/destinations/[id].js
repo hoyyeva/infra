@@ -1,14 +1,12 @@
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
-import dayjs from 'dayjs'
+import useSWR, { useSWRConfig } from 'swr'
+import { useEffect, useState } from 'react'
 
 import { useAdmin } from '../../lib/admin'
 import { sortBySubject, sortByPrivilege } from '../../lib/grants'
 
-import EmptyData from '../../components/empty-data'
 import RoleSelect from '../../components/role-select'
 import GrantForm from '../../components/grant-form'
-import Metadata from '../../components/metadata'
 import RemoveButton from '../../components/remove-button'
 import Dashboard from '../../components/layouts/dashboard'
 
@@ -17,32 +15,15 @@ function parent(resource = '') {
   return parts.length > 1 ? parts[0] : null
 }
 
-function ConnectSection({ userID, resource, kind = 'resource' }) {
-  const { data: { items: grants } = {} } = useSWR(
-    `/api/grants?user=${userID}&resource=${resource}&showInherited=1&limit=1000`
-  )
-
-  const roles = [
-    ...new Set(
-      grants?.filter(g => g.resource !== 'infra')?.map(ug => ug.privilege)
-    ),
-  ].sort(sortByPrivilege)
-
-  if (!roles.length) {
-    return null
-  }
-
+function ConnectSection({ roles, resource, kind = 'resource' }) {
   return (
-    <section>
-      <h3 className='border-b border-gray-800 py-4 text-3xs uppercase text-gray-400'>
-        Connect
-      </h3>
+    <div>
       <p className='my-4 text-2xs leading-normal'>
         Connect to this {kind} via the{' '}
         <a
           target='_blank'
           href='https://infrahq.com/docs/install/install-infra-cli'
-          className='font-medium text-violet-200 underline'
+          className='font-medium text-blue-600 underline hover:text-blue-500'
           rel='noreferrer'
         >
           Infra CLI
@@ -57,7 +38,110 @@ function ConnectSection({ userID, resource, kind = 'resource' }) {
         <br />
         kubectl get pods
       </pre>
-    </section>
+    </div>
+  )
+}
+
+function AccessTable({
+  grants,
+  users,
+  groups,
+  destination,
+  onRemove,
+  onChange,
+  inherited,
+}) {
+  return (
+    <table className='min-w-full divide-y divide-gray-300'>
+      <tbody className='bg-white'>
+        {inherited && inherited.length > 0 && (
+          <tr>
+            <th
+              colSpan={5}
+              scope='colgroup'
+              className='bg-gray-100 p-2 text-left text-sm font-semibold text-gray-900'
+            >
+              Cluster
+            </th>
+          </tr>
+        )}
+        {grants
+          ?.sort(sortByPrivilege)
+          ?.sort(sortBySubject)
+          ?.map(group => (
+            <tr key={group.id} className='border-b border-gray-200'>
+              <td className='whitespace-nowrap py-4 text-xs font-medium'>
+                <div className='truncate font-medium text-gray-900'>
+                  {users?.find(u => u.id === group.user)?.name}
+                  {groups?.find(g => g.id === group.group)?.name}
+                </div>
+              </td>
+              <td className='py-4 px-3 text-right text-sm text-gray-500'>
+                <RoleSelect
+                  role={group.privilege}
+                  roles={destination.roles}
+                  remove
+                  onRemove={async () => onRemove(group.id)}
+                  onChange={async privilege => onChange(privilege, group)}
+                  direction='left'
+                />
+              </td>
+            </tr>
+          ))}
+        {inherited && inherited.length > 0 && (
+          <>
+            <tr>
+              <th
+                colSpan={5}
+                scope='colgroup'
+                title='This access is inherited by a group and cannot be edited here'
+                className='bg-gray-100 p-2 text-left text-sm font-semibold text-gray-900'
+              >
+                Inherited
+              </th>
+            </tr>
+            {inherited
+              ?.sort(sortByPrivilege)
+              ?.sort(sortBySubject)
+              ?.map(item => (
+                <tr key={item.id} className='border-b border-gray-200'>
+                  <td className='whitespace-nowrap py-4 text-xs font-medium'>
+                    <div className='truncate font-medium text-gray-900'>
+                      {users?.find(u => u.id === item.user)?.name}
+                      {groups?.find(group => group.id === item.group)?.name}
+                    </div>
+                  </td>
+                  <td className='py-4 px-3 text-right text-sm text-gray-500'>
+                    {item.privilege}
+                  </td>
+                </tr>
+              ))}
+          </>
+        )}
+      </tbody>
+    </table>
+  )
+}
+
+function NamespacesTable({ resources }) {
+  return (
+    <div className='overflow-hidden bg-white shadow sm:rounded-md'>
+      <ul role='list' className='divide-y divide-gray-200'>
+        {resources.map(resource => (
+          <li key={resource}>
+            <a href='#' className='block hover:bg-gray-50'>
+              <div className='px-4 py-4 sm:px-6'>
+                <div className='flex items-center justify-between'>
+                  <p className='truncate text-sm font-medium text-gray-900'>
+                    {resource}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -65,9 +149,9 @@ export default function DestinationDetail() {
   const router = useRouter()
   const destinationId = router.query.id
 
-  const { data: destination } = useSWR(`/api/destinations/${destinationId}`)
+  const { admin, loading: adminLoading } = useAdmin()
 
-  const { admin } = useAdmin()
+  const { data: destination } = useSWR(`/api/destinations/${destinationId}`)
   const { data: auth } = useSWR('/api/users/self')
   const { data: { items: users } = {} } = useSWR('/api/users?limit=1000')
   const { data: { items: groups } = {} } = useSWR('/api/groups?limit=1000')
@@ -79,178 +163,223 @@ export default function DestinationDetail() {
       ? `/api/grants?resource=${parent(destination?.name)}&limit=1000`
       : null
   )
+  const { data: { items: currentUserGrants } = {} } = useSWR(
+    `/api/grants?user=${auth?.id}&resource=${destination?.name}&showInherited=1&limit=1000`
+  )
 
-  const empty =
-    grants?.length === 0 &&
-    (parent(destination?.name) ? inherited?.length === 0 : true)
-  const metadata = [
-    { title: 'ID', data: destination?.id || '-' },
-    { title: 'Kind', data: destination?.kind || '-' },
-    {
-      title: 'Added',
-      data: destination?.created ? dayjs(destination?.created).fromNow() : '-',
-    },
-    {
-      title: 'Updated',
-      data: destination?.updated
-        ? dayjs(destination.upd?.updated).fromNow()
-        : '-',
-    },
-    {
-      title: 'Connector Version',
-      data: destination?.version || '-',
-    },
-  ]
+  const { mutate: mutateCurrentUserGrants } = useSWRConfig()
+
+  const [currentUserRoles, setCurrentUserRoles] = useState([])
+
+  useEffect(() => {
+    mutateCurrentUserGrants(
+      `/api/grants?user=${auth?.id}&resource=${destination?.name}&showInherited=1&limit=1000`
+    )
+
+    const roles = currentUserGrants
+      ?.filter(g => g.resource !== 'infra')
+      ?.map(ug => ug.privilege)
+      .sort(sortByPrivilege)
+
+    setCurrentUserRoles(roles)
+  }, [grants, auth, destination, currentUserGrants, mutateCurrentUserGrants])
+
+  const loading = [
+    !adminLoading,
+    auth,
+    destination,
+    users,
+    groups,
+    grants,
+  ].some(x => !x)
 
   return (
-    <div className='flex flex-1 flex-col space-y-6'>
-      {admin && (
-        <section>
-          <h3 className='border-b border-gray-800 py-4 text-3xs uppercase text-gray-400'>
-            Access
-          </h3>
-          <GrantForm
-            roles={destination?.roles}
-            onSubmit={async ({ user, group, privilege }) => {
-              // don't add grants that already exist
-              if (
-                grants?.find(
-                  g =>
-                    g.user === user &&
-                    g.group === group &&
-                    g.privilege === privilege
-                )
-              ) {
-                return false
-              }
-
-              const res = await fetch('/api/grants', {
-                method: 'POST',
-                body: JSON.stringify({
-                  user,
-                  group,
-                  privilege,
-                  resource: destination?.name,
-                }),
-              })
-
-              mutate({ items: [...grants, await res.json()] })
-            }}
-          />
-          <div className='mt-4'>
-            {empty && (
-              <EmptyData>
-                <div className='mt-6'>No access</div>
-              </EmptyData>
-            )}
-            {grants
-              ?.sort(sortByPrivilege)
-              ?.sort(sortBySubject)
-              ?.map(g => (
-                <div
-                  key={g.id}
-                  className='flex items-center justify-between text-2xs'
-                >
-                  <div className='truncate'>
-                    {users?.find(u => u.id === g.user)?.name}
-                    {groups?.find(group => group.id === g.group)?.name}
+    <div className='md:px-6 xl:px-10 2xl:m-auto 2xl:max-w-6xl'>
+      {!loading && (
+        <div className='px-4 sm:px-6 md:px-0'>
+          <div className='flex min-h-0 flex-1 flex-col px-0 md:px-6 xl:px-0'>
+            <div className='py-6 xl:flex xl:items-center xl:justify-between'>
+              <div className='min-w-0 flex-1'>
+                <div className='flex items-center'>
+                  <div>
+                    <div className='flex items-center'>
+                      <h1 className='text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9'>
+                        {destination?.name}
+                      </h1>
+                    </div>
+                    <dl className='mt-6 flex flex-col sm:flex-row sm:flex-wrap'>
+                      <dt className='sr-only'>Cluster Id</dt>
+                      <dd className='flex items-center text-sm font-medium text-gray-500 sm:mr-6'>
+                        {destination?.id}
+                      </dd>
+                      <dt className='sr-only'>Number of namespace</dt>
+                      <dd className='mt-3 flex items-center text-sm font-medium text-gray-500 sm:mr-6 sm:mt-0'>
+                        {destination.resources ? (
+                          <>
+                            {destination.resources.length}{' '}
+                            {destination.resources.length === 1
+                              ? 'namespace'
+                              : 'namespaces'}
+                          </>
+                        ) : (
+                          '0 namespaces'
+                        )}
+                      </dd>
+                      <dt className='sr-only'>Version</dt>
+                      <dd className='flex items-center text-sm font-medium text-gray-500 sm:mr-6'>
+                        {destination.version ? <>{destination.version}</> : '-'}
+                      </dd>
+                      <dt className='sr-only'>Version</dt>
+                      <dd className='flex items-center text-sm font-medium text-gray-500 sm:mr-6'>
+                        <div
+                          className={`h-2 w-2 flex-none rounded-full ${
+                            destination.connected
+                              ? 'bg-green-400'
+                              : 'bg-gray-600'
+                          }`}
+                        />
+                        <span className='flex-none px-2 text-gray-400'>
+                          {destination.connected ? 'Connected' : 'Disconnected'}
+                        </span>
+                      </dd>
+                    </dl>
                   </div>
-                  <RoleSelect
-                    role={g.privilege}
-                    roles={destination.roles}
-                    remove
+                </div>
+              </div>
+              <div className='mt-6 flex space-x-3 xl:mt-0 xl:ml-4'>
+                {admin && destination?.id && (
+                  <RemoveButton
                     onRemove={async () => {
-                      await fetch(`/api/grants/${g.id}`, { method: 'DELETE' })
-                      mutate({ items: grants.filter(x => x.id !== g.id) })
+                      await fetch(`/api/destinations/${destination?.id}`, {
+                        method: 'DELETE',
+                      })
+
+                      router.replace('/destinations')
                     }}
-                    onChange={async privilege => {
-                      if (privilege === g.privilege) {
-                        return
+                    modalTitle='Remove Cluster'
+                    modalMessage={
+                      <>
+                        Are you sure you want to disconnect{' '}
+                        <span className='font-bold'>{destination?.name}?</span>
+                        <br />
+                        Note: you must also uninstall the Infra Connector from
+                        this cluster.
+                      </>
+                    }
+                  >
+                    Remove this cluster
+                  </RemoveButton>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className='mt-6 space-y-10'>
+            {admin && (
+              <div>
+                <h2 className='text-md border-b border-gray-200 py-2 font-medium text-gray-500'>
+                  Namespaces
+                </h2>
+                <div className='space-y-6'>
+                  <div className='mt-6'>
+                    <NamespacesTable resources={destination?.resources} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {admin && (
+              <div>
+                <h2 className='text-md border-b border-gray-200 py-2 font-medium text-gray-500'>
+                  Access
+                </h2>
+                <div className='space-y-6'>
+                  <div>
+                    <AccessTable
+                      grants={grants}
+                      users={users}
+                      groups={groups}
+                      destination={destination}
+                      onRemove={async groupId => {
+                        await fetch(`/api/grants/${groupId}`, {
+                          method: 'DELETE',
+                        })
+                        mutate({
+                          items: grants.filter(x => x.id !== groupId),
+                        })
+                      }}
+                      onChange={async (privilege, group) => {
+                        if (privilege === group.privilege) {
+                          return
+                        }
+
+                        const res = await fetch('/api/grants', {
+                          method: 'POST',
+                          body: JSON.stringify({
+                            ...group,
+                            privilege,
+                          }),
+                        })
+
+                        // delete old grant
+                        await fetch(`/api/grants/${group.id}`, {
+                          method: 'DELETE',
+                        })
+
+                        mutate({
+                          items: [
+                            ...grants.filter(f => f.id !== group.id),
+                            await res.json(),
+                          ],
+                        })
+                      }}
+                      inherited={inherited}
+                    />
+                  </div>
+                  <GrantForm
+                    roles={destination?.roles}
+                    onSubmit={async ({ user, group, privilege }) => {
+                      // don't add grants that already exist
+                      if (
+                        grants?.find(
+                          g =>
+                            g.user === user &&
+                            g.group === group &&
+                            g.privilege === privilege
+                        )
+                      ) {
+                        return false
                       }
 
                       const res = await fetch('/api/grants', {
                         method: 'POST',
                         body: JSON.stringify({
-                          ...g,
+                          user,
+                          group,
                           privilege,
+                          resource: destination?.name,
                         }),
                       })
 
-                      // delete old grant
-                      await fetch(`/api/grants/${g.id}`, { method: 'DELETE' })
-
-                      mutate({
-                        items: [
-                          ...grants.filter(f => f.id !== g.id),
-                          await res.json(),
-                        ],
-                      })
+                      mutate({ items: [...grants, await res.json()] })
                     }}
-                    direction='left'
                   />
                 </div>
-              ))}
-            {inherited
-              ?.sort(sortByPrivilege)
-              ?.sort(sortBySubject)
-              ?.map(g => (
-                <div
-                  key={g.id}
-                  className='flex items-center justify-between text-2xs'
-                >
-                  <div className='truncate'>
-                    {users?.find(u => u.id === g.user)?.name}
-                    {groups?.find(group => group.id === g.group)?.name}
-                  </div>
-                  <div className='flex flex-none'>
-                    <div
-                      title='This access is inherited by a parent resource and cannot be edited here'
-                      className='relative mx-1 self-center rounded border border-gray-800 bg-gray-800 px-2 pt-px text-2xs text-gray-400'
-                    >
-                      inherited
-                    </div>
-                    <div className='relative w-32 flex-none py-2 pl-3 pr-8 text-left text-2xs text-gray-400'>
-                      {g.privilege}
-                    </div>
-                  </div>
-                </div>
-              ))}
+              </div>
+            )}
+            {currentUserRoles && currentUserRoles?.length > 0 && (
+              <div>
+                <h2 className='text-md border-b border-gray-200 py-2 font-medium text-gray-500'>
+                  Connect
+                </h2>
+                <ConnectSection
+                  userID={auth?.id}
+                  roles={currentUserRoles}
+                  kind={destination?.kind}
+                  resource={destination?.name}
+                />
+              </div>
+            )}
           </div>
-        </section>
-      )}
-      <ConnectSection
-        userID={auth?.id}
-        kind={destination?.kind}
-        resource={destination?.name}
-      />
-      <section>
-        <h3 className='border-b border-gray-800 py-4 text-3xs uppercase text-gray-400'>
-          Metadata
-        </h3>
-        <Metadata data={metadata} />
-      </section>
-      {admin && destination?.id && (
-        <section className='flex flex-1 flex-col items-end justify-end py-6'>
-          <RemoveButton
-            onRemove={async () => {
-              await fetch(`/api/destinations/${destination?.id}`, {
-                method: 'DELETE',
-              })
-
-              router.replace('/destinations')
-            }}
-            modalTitle='Remove Cluster'
-            modalMessage={
-              <>
-                Are you sure you want to disconnect{' '}
-                <span className='font-bold'>{destination?.name}?</span>
-                <br />
-                Note: you must also uninstall the Infra Connector from this
-                cluster.
-              </>
-            }
-          />
-        </section>
+        </div>
       )}
     </div>
   )

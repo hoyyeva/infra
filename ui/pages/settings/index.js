@@ -124,42 +124,44 @@ export default function Settings() {
                 <h1 className='text-base'>Infra Admin</h1>
               </div>
             </div>
-            <GrantForm
-              resource='infra'
-              roles={['admin']}
-              onSubmit={async ({ user, group }) => {
-                // don't add grants that already exist
-                if (grants?.find(g => g.user === user && g.group === group)) {
-                  return false
-                }
+            <div className='flex flex-col space-y-3 pt-6'>
+              <GrantForm
+                resource='infra'
+                roles={['admin']}
+                onSubmit={async ({ user, group }) => {
+                  // don't add grants that already exist
+                  if (grants?.find(g => g.user === user && g.group === group)) {
+                    return false
+                  }
 
-                const res = await fetch('/api/grants', {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    user,
-                    group,
-                    privilege: 'admin',
-                    resource: 'infra',
-                  }),
-                })
-
-                mutate({ items: [...grants, await res.json()] })
-              }}
-            />
-            <div className='py-6'>
-              <AdminList
-                grants={grants}
-                users={users}
-                groups={groups}
-                selfGroups={selfGroups}
-                auth={auth}
-                onRemove={async grantId => {
-                  await fetch(`/api/grants/${grantId}`, {
-                    method: 'DELETE',
+                  const res = await fetch('/api/grants', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      user,
+                      group,
+                      privilege: 'admin',
+                      resource: 'infra',
+                    }),
                   })
-                  mutate({ items: grants?.filter(x => x.id !== grantId) })
+
+                  mutate({ items: [...grants, await res.json()] })
                 }}
               />
+              <div>
+                <AdminList
+                  grants={grants}
+                  users={users}
+                  groups={groups}
+                  selfGroups={selfGroups}
+                  auth={auth}
+                  onRemove={async grantId => {
+                    await fetch(`/api/grants/${grantId}`, {
+                      method: 'DELETE',
+                    })
+                    mutate({ items: grants?.filter(x => x.id !== grantId) })
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
