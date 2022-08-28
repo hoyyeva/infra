@@ -2,13 +2,13 @@ import { useRouter } from 'next/router'
 import useSWR, { useSWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 
-import { useAdmin } from '../../lib/admin'
-import { sortBySubject, sortByPrivilege } from '../../lib/grants'
+import { useAdmin } from '../../../lib/admin'
+import { sortByPrivilege } from '../../../lib/grants'
 
-import RoleSelect from '../../components/role-select'
-import GrantForm from '../../components/grant-form'
-import RemoveButton from '../../components/remove-button'
-import Dashboard from '../../components/layouts/dashboard'
+import AccessTable from '../../../components/access-table'
+import GrantForm from '../../../components/grant-form'
+import RemoveButton from '../../../components/remove-button'
+import Dashboard from '../../../components/layouts/dashboard'
 
 function parent(resource = '') {
   const parts = resource.split('.')
@@ -42,94 +42,16 @@ function ConnectSection({ roles, resource, kind = 'resource' }) {
   )
 }
 
-function AccessTable({
-  grants,
-  users,
-  groups,
-  destination,
-  onRemove,
-  onChange,
-  inherited,
-}) {
-  return (
-    <table className='min-w-full divide-y divide-gray-300'>
-      <tbody className='bg-white'>
-        {inherited && inherited.length > 0 && (
-          <tr>
-            <th
-              colSpan={5}
-              scope='colgroup'
-              className='bg-gray-100 p-2 text-left text-sm font-semibold text-gray-900'
-            >
-              Cluster
-            </th>
-          </tr>
-        )}
-        {grants
-          ?.sort(sortByPrivilege)
-          ?.sort(sortBySubject)
-          ?.map(group => (
-            <tr key={group.id} className='border-b border-gray-200'>
-              <td className='whitespace-nowrap py-4 text-xs font-medium'>
-                <div className='truncate font-medium text-gray-900'>
-                  {users?.find(u => u.id === group.user)?.name}
-                  {groups?.find(g => g.id === group.group)?.name}
-                </div>
-              </td>
-              <td className='py-4 px-3 text-right text-sm text-gray-500'>
-                <RoleSelect
-                  role={group.privilege}
-                  roles={destination.roles}
-                  remove
-                  onRemove={async () => onRemove(group.id)}
-                  onChange={async privilege => onChange(privilege, group)}
-                  direction='left'
-                />
-              </td>
-            </tr>
-          ))}
-        {inherited && inherited.length > 0 && (
-          <>
-            <tr>
-              <th
-                colSpan={5}
-                scope='colgroup'
-                title='This access is inherited by a group and cannot be edited here'
-                className='bg-gray-100 p-2 text-left text-sm font-semibold text-gray-900'
-              >
-                Inherited
-              </th>
-            </tr>
-            {inherited
-              ?.sort(sortByPrivilege)
-              ?.sort(sortBySubject)
-              ?.map(item => (
-                <tr key={item.id} className='border-b border-gray-200'>
-                  <td className='whitespace-nowrap py-4 text-xs font-medium'>
-                    <div className='truncate font-medium text-gray-900'>
-                      {users?.find(u => u.id === item.user)?.name}
-                      {groups?.find(group => group.id === item.group)?.name}
-                    </div>
-                  </td>
-                  <td className='py-4 px-3 text-right text-sm text-gray-500'>
-                    {item.privilege}
-                  </td>
-                </tr>
-              ))}
-          </>
-        )}
-      </tbody>
-    </table>
-  )
-}
-
-function NamespacesTable({ resources }) {
+function NamespacesTable({ resources, destinationId }) {
   return (
     <div className='overflow-hidden bg-white shadow sm:rounded-md'>
       <ul role='list' className='divide-y divide-gray-200'>
         {resources.map(resource => (
           <li key={resource}>
-            <a href='#' className='block hover:bg-gray-50'>
+            <a
+              href={`/destinations/${destinationId}/${resource}`}
+              className='block hover:bg-gray-50'
+            >
               <div className='px-4 py-4 sm:px-6'>
                 <div className='flex items-center justify-between'>
                   <p className='truncate text-sm font-medium text-gray-900'>
@@ -281,7 +203,10 @@ export default function DestinationDetail() {
                 </h2>
                 <div className='space-y-6'>
                   <div className='mt-6'>
-                    <NamespacesTable resources={destination?.resources} />
+                    <NamespacesTable
+                      resources={destination?.resources}
+                      destinationId={destinationId}
+                    />
                   </div>
                 </div>
               </div>
